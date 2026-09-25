@@ -18,7 +18,7 @@ import { BLOCKS, type Block, type Shot } from "./interview";
 
 const FPS = 30;
 const TITLE_FRAMES = 5 * FPS;
-const BURST_FRAMES = 18;
+const STING_FRAMES = 10;
 
 // Kusama-inspired palette on a dark purple base (matches the script's
 // "coloured dots on a dark purple background" transition title).
@@ -101,33 +101,61 @@ const DotsBackground: React.FC<{ seed: string; intro?: boolean }> = ({
   );
 };
 
-// Coloured dots burst over a cut point; fully covers the frame at the midpoint.
-const DotsBurst: React.FC = () => {
+// Very short Tate-style sting over a cut: a bright colour block with a
+// halftone dot pattern and a bold wordmark that pulls in and out of focus
+// (a nod to Tate's shifting-focus logo). Fully covers the frame mid-way.
+const STING_COLORS = ["#ff4fa3", "#ffd23f", "#3ec7ff", "#ff3d5a", "#b18cff"];
+
+const TateSting: React.FC<{ index: number }> = ({ index }) => {
   const frame = useCurrentFrame();
-  const mid = BURST_FRAMES / 2;
+  const color = STING_COLORS[index % STING_COLORS.length];
+  const fromLeft = index % 2 === 0;
 
   return (
-    <AbsoluteFill style={{ overflow: "hidden" }}>
-      {DOT_COLORS.slice(0, 4).map((color, i) => (
-        <div
-          key={color}
-          style={{
-            position: "absolute",
-            left: 960 - 1200,
-            top: 540 - 1200,
-            width: 2400,
-            height: 2400,
-            borderRadius: "50%",
-            background: i === 3 ? BG_INNER : color,
-            scale: interpolate(
-              frame,
-              [i * 1.5, mid, BURST_FRAMES - 3 + i * 0.5],
-              [0, 1, 0],
-              { ...clamp, easing: Easing.bezier(0.65, 0, 0.35, 1) },
-            ),
-          }}
-        />
-      ))}
+    <AbsoluteFill
+      style={{
+        background: color,
+        clipPath: `inset(0 ${interpolate(
+          frame,
+          [0, 3, STING_FRAMES - 3, STING_FRAMES],
+          fromLeft ? [100, 0, 0, 0] : [0, 0, 0, 100],
+          { ...clamp, easing: Easing.bezier(0.65, 0, 0.35, 1) },
+        )}% 0 ${interpolate(
+          frame,
+          [0, 3, STING_FRAMES - 3, STING_FRAMES],
+          fromLeft ? [0, 0, 0, 100] : [100, 0, 0, 0],
+          { ...clamp, easing: Easing.bezier(0.65, 0, 0.35, 1) },
+        )}%)`,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <AbsoluteFill
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(0,0,0,0.22) 9px, transparent 10px)",
+          backgroundSize: "44px 44px",
+          backgroundPosition: `${frame * 6}px 0px`,
+        }}
+      />
+      <div
+        style={{
+          fontFamily,
+          fontWeight: 900,
+          fontSize: 210,
+          letterSpacing: -6,
+          color: "#111111",
+          filter: `blur(${interpolate(
+            frame,
+            [1, 5, STING_FRAMES - 1],
+            [18, 0, 12],
+            clamp,
+          )}px)`,
+          scale: interpolate(frame, [0, STING_FRAMES], [0.94, 1.04], clamp),
+        }}
+      >
+        TATE KIDS
+      </div>
     </AbsoluteFill>
   );
 };
@@ -161,7 +189,7 @@ const TitleCard: React.FC = () => {
             }),
           }}
         >
-          Отзыв родителя
+          Parent Review
         </Interactive.Div>
         <Interactive.Div
           name="Subtitle"
@@ -177,7 +205,7 @@ const TitleCard: React.FC = () => {
             }),
           }}
         >
-          взгляд целевой аудитории
+          A Target Audience Perspective
         </Interactive.Div>
       </AbsoluteFill>
     </AbsoluteFill>
@@ -310,7 +338,7 @@ const BlockView: React.FC<{ block: Block }> = ({ block }) => {
               letterSpacing: 4,
             }}
           >
-            ВОПРОС
+            QUESTION
           </Interactive.Div>
           <Interactive.Div
             name="Question"
@@ -355,26 +383,19 @@ export const ParentInterview: React.FC = () => {
       <TransitionSeries.Sequence durationInFrames={TITLE_FRAMES}>
         <TitleCard />
       </TransitionSeries.Sequence>
-      {BLOCKS.map((block, i) => {
-        // Q1 → Q2 is the same take location, so it is cut straight
-        // ("встык"); every other cut is covered by a dots burst.
-        const straightCut = block.id === "Q2";
-        return (
-          <React.Fragment key={block.id}>
-            {i === 0 || !straightCut ? (
-              <TransitionSeries.Overlay durationInFrames={BURST_FRAMES}>
-                <DotsBurst />
-              </TransitionSeries.Overlay>
-            ) : null}
-            <TransitionSeries.Sequence
-              durationInFrames={blockFrames(block)}
-              premountFor={fps}
-            >
-              <BlockView block={block} />
-            </TransitionSeries.Sequence>
-          </React.Fragment>
-        );
-      })}
+      {BLOCKS.map((block, i) => (
+        <React.Fragment key={block.id}>
+          <TransitionSeries.Overlay durationInFrames={STING_FRAMES}>
+            <TateSting index={i} />
+          </TransitionSeries.Overlay>
+          <TransitionSeries.Sequence
+            durationInFrames={blockFrames(block)}
+            premountFor={fps}
+          >
+            <BlockView block={block} />
+          </TransitionSeries.Sequence>
+        </React.Fragment>
+      ))}
     </TransitionSeries>
   );
 };
