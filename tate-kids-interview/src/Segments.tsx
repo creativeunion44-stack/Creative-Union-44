@@ -23,14 +23,14 @@ import { BG_INNER, clamp, DOT_COLORS, DotsBackground } from "./Composition";
 import { fontFamily } from "./fonts";
 
 const FPS = 30;
-const DOT_WIPE_FRAMES = 16;
-const sec = (s: number) => Math.round(s * FPS);
+export const DOT_WIPE_FRAMES = 16;
+export const sec = (s: number) => Math.round(s * FPS);
 
-type Crop = { x: number; y: number; w: number; h: number };
+export type Crop = { x: number; y: number; w: number; h: number };
 
 type Caption = { from: number; text: string };
 
-type Clip = {
+export type Clip = {
   src: string;
   srcW: number;
   srcH: number;
@@ -43,13 +43,13 @@ type Clip = {
   captions?: Caption[];
 };
 
-const clipFrames = (clip: Clip) =>
+export const clipFrames = (clip: Clip) =>
   sec((clip.to - clip.from) / (clip.rate ?? 1));
 
 // ---------- shared pieces ----------
 
 // Shows `crop` of the source video scaled to cover width x height.
-const CroppedVideo: React.FC<{
+export const CroppedVideo: React.FC<{
   clip: Clip;
   width: number;
   height: number;
@@ -89,7 +89,7 @@ const CroppedVideo: React.FC<{
   );
 };
 
-const Pill: React.FC<{ children: React.ReactNode; name: string }> = ({
+export const Pill: React.FC<{ children: React.ReactNode; name: string }> = ({
   children,
   name,
 }) => (
@@ -166,7 +166,7 @@ const CaptionBar: React.FC<{ clip: Clip; top: number }> = ({ clip, top }) => {
 
 // Kusama-style wipe: polka dots swell until they cover the frame, then
 // shrink away to reveal the next scene.
-const DotWipe: React.FC<{ seed: string }> = ({ seed }) => {
+export const DotWipe: React.FC<{ seed: string }> = ({ seed }) => {
   const frame = useCurrentFrame();
   const mid = DOT_WIPE_FRAMES / 2;
   const cols = 9;
@@ -205,7 +205,7 @@ const DotWipe: React.FC<{ seed: string }> = ({ seed }) => {
 };
 
 // White rounded frame used for every piece of footage (as in the interview).
-const Frame: React.FC<{
+export const Frame: React.FC<{
   width: number;
   height: number;
   children: React.ReactNode;
@@ -229,7 +229,7 @@ const Frame: React.FC<{
 
 // ---------- piece 1: hook + title (0:24–0:38) ----------
 
-const HOOK: Clip = {
+export const HOOK: Clip = {
   src: "footage/hook.mp4",
   srcW: 1256,
   srcH: 740,
@@ -254,7 +254,7 @@ const TITLE_FRAMES = sec(14) - clipFrames(HOOK);
 // Music bed: the instrumental intro of Tate's Kusama film. The title card
 // takes its first seconds and the channel section continues from there, so
 // the two pieces join without repeating the music.
-const MUSIC_SRC = "footage/kusama-film.mp4";
+export const MUSIC_SRC = "footage/kusama-film.mp4";
 const MUSIC_START = sec(3);
 
 const HookScene: React.FC = () => {
@@ -317,7 +317,9 @@ const HookScene: React.FC = () => {
 
 // Pop-art title card in the Tate Kids channel colours (red, purple,
 // teal, orange), keeping the purple dots world of the rest of the film.
-const TitleScene: React.FC = () => {
+export const TitleScene: React.FC<{ withMusic?: boolean }> = ({
+  withMusic = true,
+}) => {
   const frame = useCurrentFrame();
   const pop = (start: number) =>
     interpolate(frame, [start, start + 12], [0, 1], {
@@ -328,19 +330,21 @@ const TitleScene: React.FC = () => {
   return (
     <AbsoluteFill style={{ fontFamily, overflow: "hidden" }}>
       <DotsBackground seed="title-card" />
-      <Audio
-        src={staticFile(MUSIC_SRC)}
-        trimBefore={MUSIC_START}
-        trimAfter={MUSIC_START + TITLE_FRAMES}
-        volume={(f) =>
-          interpolate(
-            f,
-            [0, 6, TITLE_FRAMES - 3, TITLE_FRAMES],
-            [0, 0.8, 0.8, 0],
-            clamp,
-          )
-        }
-      />
+      {withMusic ? (
+        <Audio
+          src={staticFile(MUSIC_SRC)}
+          trimBefore={MUSIC_START}
+          trimAfter={MUSIC_START + TITLE_FRAMES}
+          volume={(f) =>
+            interpolate(
+              f,
+              [0, 6, TITLE_FRAMES - 3, TITLE_FRAMES],
+              [0, 0.8, 0.8, 0],
+              clamp,
+            )
+          }
+        />
+      ) : null}
       {[
         { c: "#ff2a3d", x: -180, y: -160, w: 900, h: 520, r: -12, d: 0 },
         { c: "#7b2fa3", x: 1240, y: -120, w: 860, h: 480, r: 14, d: 3 },
@@ -668,7 +672,7 @@ const ChannelScene: React.FC = () => {
   );
 };
 
-const MILDRED: Clip = {
+export const MILDRED: Clip = {
   src: "footage/mildred.mp4",
   srcW: 1192,
   srcH: 804,
@@ -682,7 +686,7 @@ const MILDRED: Clip = {
     { from: 10.6, text: "to look at the paintings and sculptures inside." },
   ],
 };
-const KUSAMA_EP_CROP: Crop = { x: 0, y: 6, w: 1174, h: 594 };
+export const KUSAMA_EP_CROP: Crop = { x: 0, y: 6, w: 1174, h: 594 };
 const KUSAMA_A: Clip = {
   src: "footage/kusama-episode.mp4",
   srcW: 1174,
@@ -765,7 +769,7 @@ const EpisodeScene: React.FC<{ clip: Clip; title: string }> = ({
   );
 };
 
-const PORTRAIT: Clip = {
+export const PORTRAIT: Clip = {
   src: "footage/kusama-film.mp4",
   srcW: 1876,
   srcH: 888,
