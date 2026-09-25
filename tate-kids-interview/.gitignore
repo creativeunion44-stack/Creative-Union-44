@@ -8,3 +8,4 @@ out
 
 # Source interview footage (large, kept out of Git)
 public/interview
+public/footage

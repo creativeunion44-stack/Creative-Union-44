@@ -29,11 +29,11 @@ const DISSOLVE_FRAMES = 8;
 
 // Kusama-inspired palette on a dark purple base (matches the script's
 // "coloured dots on a dark purple background" transition title).
-const DOT_COLORS = ["#ff3d5a", "#ffd23f", "#ff6fb5", "#3ec7ff", "#ffffff"];
-const BG_INNER = "#3a1566";
-const BG_OUTER = "#140726";
+export const DOT_COLORS = ["#ff3d5a", "#ffd23f", "#ff6fb5", "#3ec7ff", "#ffffff"];
+export const BG_INNER = "#3a1566";
+export const BG_OUTER = "#140726";
 
-const clamp = {
+export const clamp = {
   extrapolateLeft: "clamp",
   extrapolateRight: "clamp",
 } as const;
@@ -59,7 +59,7 @@ export const MyComposition = () => {
   );
 };
 
-const DotsBackground: React.FC<{
+export const DotsBackground: React.FC<{
   seed: string;
   intro?: boolean;
   dotsOpacity?: number;
