@@ -22,8 +22,6 @@ const TITLE_FRAMES = 5 * FPS;
 const FADE_FRAMES = 10;
 // Location change (window -> kitchen): fade to purple and back, 0.33 s.
 const LOCATION_FADE_FRAMES = 10;
-// Tate sting on the other question changes.
-const STING_FRAMES = 8;
 // Cross-dissolve inside an answer that skips part of the take.
 const DISSOLVE_FRAMES = 8;
 
@@ -126,53 +124,6 @@ const LocationFade: React.FC = () => {
       }}
     >
       <DotsBackground seed="location" />
-    </AbsoluteFill>
-  );
-};
-
-// Very short Tate-style sting on a question change: a full-frame colour card
-// with a halftone dot pattern and a bold wordmark that pulls in and out of
-// focus (a nod to Tate's shifting-focus logo). It cuts in and out on whole
-// frames, so nothing underneath shows through.
-const STING_COLORS = ["#ff4fa3", "#ffd23f", "#3ec7ff", "#ff3d5a", "#b18cff"];
-
-const TateSting: React.FC<{ index: number }> = ({ index }) => {
-  const frame = useCurrentFrame();
-
-  return (
-    <AbsoluteFill
-      style={{
-        background: STING_COLORS[index % STING_COLORS.length],
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <AbsoluteFill
-        style={{
-          backgroundImage:
-            "radial-gradient(rgba(0,0,0,0.22) 9px, transparent 10px)",
-          backgroundSize: "44px 44px",
-          backgroundPosition: `${frame * 6}px 0px`,
-        }}
-      />
-      <div
-        style={{
-          fontFamily,
-          fontWeight: 900,
-          fontSize: 210,
-          letterSpacing: -6,
-          color: "#111111",
-          filter: `blur(${interpolate(
-            frame,
-            [0, 3, STING_FRAMES - 1],
-            [16, 0, 10],
-            clamp,
-          )}px)`,
-          scale: interpolate(frame, [0, STING_FRAMES], [0.95, 1.04], clamp),
-        }}
-      >
-        TATE KIDS
-      </div>
     </AbsoluteFill>
   );
 };
@@ -447,11 +398,6 @@ export const ParentInterview: React.FC = () => {
             {prev && prev.location !== block.location ? (
               <TransitionSeries.Overlay durationInFrames={LOCATION_FADE_FRAMES}>
                 <LocationFade />
-              </TransitionSeries.Overlay>
-            ) : null}
-            {prev && prev.location === block.location ? (
-              <TransitionSeries.Overlay durationInFrames={STING_FRAMES}>
-                <TateSting index={i} />
               </TransitionSeries.Overlay>
             ) : null}
             <TransitionSeries.Sequence
