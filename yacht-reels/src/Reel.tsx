@@ -3,6 +3,11 @@
 // hook title -> quick "phone off" cuts -> two key phrases on the selfies
 // -> save/share call to action. Words pop in one by one; key words sit on
 // a yellow marker. Every cut gets a punch-in zoom and a short white flash.
+//
+// Music: public/music.wav, synthesised by scripts/make_music.py at 120 BPM
+// (1 beat = 15 frames). Shot lengths are whole beats, so every cut lands
+// on the beat; the drops hit on the first line and on "не надо спешить".
+import { Audio } from "@remotion/media";
 import React from "react";
 import {
   AbsoluteFill,
@@ -38,17 +43,17 @@ const SHOTS: Shot[] = [
   {
     src: "selfie-b.mp4",
     from: 0.2,
-    dur: 2.8,
+    dur: 3.0,
     kind: "title",
     text: "1 день на *яхте*",
     sub: "который меня перезагрузил",
   },
-  { src: "sea.mp4", from: 0.3, dur: 1.8, kind: "line", text: "Телефон — на *беззвучный*" },
-  { src: "mast.mp4", from: 0.3, dur: 1.8, kind: "line", text: "Вместо будильника — *ветер*" },
-  { src: "sail.mp4", from: 0.5, dur: 1.8, kind: "line", text: "Вместо дедлайнов — *море*" },
-  { src: "sea.mp4", from: 6.0, dur: 2.2, kind: "line", text: "Город остался *где-то там*…" },
+  { src: "sea.mp4", from: 0.3, dur: 2.0, kind: "line", text: "Телефон — на *беззвучный*" },
+  { src: "mast.mp4", from: 0.3, dur: 2.0, kind: "line", text: "Вместо будильника — *ветер*" },
+  { src: "sail.mp4", from: 0.5, dur: 2.0, kind: "line", text: "Вместо дедлайнов — *море*" },
+  { src: "sea.mp4", from: 6.0, dur: 2.0, kind: "line", text: "Город остался *где-то там*…" },
   { src: "selfie-a.mp4", from: 0.5, dur: 3.0, kind: "key", text: "А я — *здесь* и *сейчас*" },
-  { src: "sea.mp4", from: 13.0, dur: 2.2, kind: "line", text: "И никуда *не надо* спешить" },
+  { src: "sea.mp4", from: 13.0, dur: 2.0, kind: "line", text: "И никуда *не надо* спешить" },
   {
     src: "selfie-a.mp4",
     from: 5.0,
@@ -58,8 +63,8 @@ const SHOTS: Shot[] = [
   },
   {
     src: "selfie-b.mp4",
-    from: 2.8,
-    dur: 2.8,
+    from: 2.6,
+    dur: 3.0,
     kind: "cta",
     text: "*Сохрани*, чтобы не забыть",
     sub: "и отправь той, кому это нужно",
@@ -98,7 +103,7 @@ const Footage: React.FC<{ shot: Shot }> = ({ shot }) => {
       <OffthreadVideo
         src={staticFile(`footage/${shot.src}`)}
         startFrom={Math.round(shot.from * FPS)}
-        volume={0.55}
+        volume={0.12}
         style={{ width: "100%", height: "100%", objectFit: "cover" }}
       />
     </AbsoluteFill>
@@ -310,6 +315,7 @@ export const Reel: React.FC = () => (
       </Sequence>
     ))}
     <Progress />
+    <Audio src={staticFile("music.wav")} volume={0.85} />
   </AbsoluteFill>
 );
 
