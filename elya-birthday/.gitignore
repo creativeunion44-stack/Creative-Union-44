@@ -1,0 +1,12 @@
+node_modules
+dist
+.DS_Store
+.env
+
+# Rendered video
+out
+
+# Family photos/footage and the generated music stay out of Git
+public/footage
+public/photos
+public/music.wav
