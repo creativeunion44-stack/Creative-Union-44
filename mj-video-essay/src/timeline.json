@@ -1,0 +1,16 @@
+{
+  "_comment": "Scene timing in seconds. Read by src/ and scripts/make_music.py, so the music follows the edit.",
+  "duration": 90,
+  "hook": [0, 10],
+  "then": [10, 25],
+  "thenShots": { "tv": [10, 15], "room": [15, 20], "cassette": [20, 25] },
+  "reasons": [
+    { "start": 25, "then": 26.5, "now": 31.5, "end": 37 },
+    { "start": 37, "then": 38.5, "now": 43, "end": 48.5 },
+    { "start": 48.5, "then": 50, "now": 54.5, "end": 60 }
+  ],
+  "who": [60, 75],
+  "whoNames": [63.5, 71],
+  "end": [75, 90],
+  "outroChord": 84
+}

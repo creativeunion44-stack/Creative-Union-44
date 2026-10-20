@@ -1,0 +1,62 @@
+import {
+  cancelRender,
+  continueRender,
+  delayRender,
+  staticFile,
+} from "remotion";
+
+// Oswald and Rubik (SIL OFL), the typefaces chosen in the production plan,
+// are bundled in public/fonts so rendering works offline.
+export const HEADING = "Oswald";
+export const BODY = "Rubik";
+
+const LATIN =
+  "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD";
+const CYRILLIC = "U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116";
+
+const faces = [
+  {
+    family: HEADING,
+    weight: "200 700",
+    file: "oswald-latin-wght-normal",
+    range: LATIN,
+  },
+  {
+    family: HEADING,
+    weight: "200 700",
+    file: "oswald-cyrillic-wght-normal",
+    range: CYRILLIC,
+  },
+  ...(["400", "500", "700"] as const).flatMap((weight) => [
+    {
+      family: BODY,
+      weight,
+      file: `rubik-latin-${weight}-normal`,
+      range: LATIN,
+    },
+    {
+      family: BODY,
+      weight,
+      file: `rubik-cyrillic-${weight}-normal`,
+      range: CYRILLIC,
+    },
+  ]),
+];
+
+const fontHandle = delayRender("Loading Oswald and Rubik");
+Promise.all(
+  faces.map(async ({ family, weight, file, range }) => {
+    const face = new FontFace(
+      family,
+      `url(${staticFile(`fonts/${file}.woff2`)})`,
+      {
+        weight,
+        unicodeRange: range,
+      },
+    );
+    await face.load();
+    document.fonts.add(face);
+  }),
+)
+  .then(() => continueRender(fontHandle))
+  .catch((err) => cancelRender(err));
