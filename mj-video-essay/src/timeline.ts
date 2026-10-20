@@ -18,7 +18,8 @@ const windowGain = (t: number, from: number, to: number) => {
 const oldWindows: [number, number][] = [
   T.then as [number, number],
   ...T.reasons.map((r) => [r.then, r.now] as [number, number]),
-  [T.outroChord, T.duration + 1],
+  // the song fades out just before the end
+  [T.outroChord, T.duration - 1],
 ];
 
 export const oldGain = (t: number) =>

@@ -3,8 +3,8 @@
 // the Unit 13 production plan: hook, then (1983), three reasons on a
 // then/now split screen, "who is the star now?", and the closing question.
 //
-// Sound: calm 1980s-style music over the past, modern uneasy music over
-// today (both synthesised from scratch by scripts/make_music.py).
+// Sound: the uploaded old song over the past (scripts/prepare_song.py),
+// modern uneasy music over today (synthesised by scripts/make_music.py).
 import { Audio, Video } from "@remotion/media";
 import React from "react";
 import {
@@ -549,7 +549,7 @@ export const Essay: React.FC<Props> = ({ lang }) => {
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       <Audio
-        src={staticFile("music/old.mp3")}
+        src={staticFile("music/old-song.mp3")}
         volume={(f) => 0.9 * oldGain(f / FPS)}
       />
       <Audio
