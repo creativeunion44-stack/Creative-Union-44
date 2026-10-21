@@ -55,7 +55,7 @@ import { DURATION, newGain, oldGain, T } from "./timeline";
 
 type Props = { lang: Lang };
 
-const useText = (lang: Lang) => (key: CaptionKey) => CAPTIONS[key][lang];
+export const useText = (lang: Lang) => (key: CaptionKey) => CAPTIONS[key][lang];
 
 // Your footage if it is set in footage.ts, otherwise the illustration.
 const ShotOr: React.FC<{ shot: Shot; children: React.ReactNode }> = ({
@@ -77,7 +77,10 @@ const ShotOr: React.FC<{ shot: Shot; children: React.ReactNode }> = ({
   );
 
 // Soft dark band behind titles so they read over busy pictures.
-const Shade: React.FC<{ top: number; height: number }> = ({ top, height }) => (
+export const Shade: React.FC<{ top: number; height: number }> = ({
+  top,
+  height,
+}) => (
   <div
     style={{
       position: "absolute",
@@ -91,12 +94,12 @@ const Shade: React.FC<{ top: number; height: number }> = ({ top, height }) => (
   />
 );
 
-const span = ([a, b]: number[]) => ({
+export const span = ([a, b]: number[]) => ({
   from: sec(a),
   durationInFrames: sec(b - a),
 });
 // caption timing in frames relative to a scene starting at `start` seconds
-const at = (start: number, a: number, b: number) => ({
+export const at = (start: number, a: number, b: number) => ({
   from: sec(a - start),
   to: sec(b - start),
 });
@@ -168,7 +171,7 @@ const Then: React.FC<Props> = ({ lang }) => {
         text={tx("year")}
         {...at(s, 10.4, 14.7)}
         big
-        size={300}
+        size={190}
         top={1260}
         color={GOLD}
       />
@@ -198,9 +201,9 @@ const Then: React.FC<Props> = ({ lang }) => {
 
 // ---------- 3. Three reasons on a split screen (25-60 s) ----------
 
-const HALF = HEIGHT / 2;
+export const HALF = HEIGHT / 2;
 
-const Pill: React.FC<{
+export const Pill: React.FC<{
   text: string;
   color: string;
   top: number;
@@ -388,7 +391,7 @@ const Reason: React.FC<Props & { index: number }> = ({ lang, index }) => {
 
 // ---------- 4. Who is the star now? (60-75 s) ----------
 
-const Names: React.FC = () => {
+export const Names: React.FC = () => {
   const frame = useCurrentFrame();
   const len = sec(T.whoNames[1] - T.whoNames[0]);
   // names come faster and faster

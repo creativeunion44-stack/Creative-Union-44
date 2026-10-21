@@ -10,7 +10,7 @@ export const CAPTIONS = {
     en: "A week later, nobody remembers them.",
     ru: "Через неделю её никто не помнит.",
   },
-  year: { en: "1983", ru: "1983" },
+  year: { en: "Back then", ru: "Раньше" },
   sameVideo: {
     en: "The whole world watched the same music video.",
     ru: "Весь мир смотрел один и тот же клип.",
