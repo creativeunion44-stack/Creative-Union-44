@@ -2,10 +2,10 @@
 
 Three stems, each the full 90 s, written to public/music/ as MP3:
 
-  old  slow, calm old-hit ballad, 72 BPM, C - Am - F - G: a soft
-           voice-like tune, electric piano, strings, bass and quiet drums
-           with 80s reverb, processed to sound like an old record on a TV
-           speaker (mono, narrow band, wow, hiss, crackle). Played over the past
+  old  slow, romantic 70s-style ballad, 70 BPM, no heavy lows: piano,
+           Rhodes, lush strings, flute tune, harp sweeps, celesta, finger
+           snaps and soft "aah" voices, with a warm reverb and tape feel.
+           Played over the past
            (the "then" shots) and the final chord.
   new  modern, slightly uneasy track: heartbeat kick, ticking hats,
            pulsing D-minor bass, a cold pad with a dissonant shimmer. Builds
@@ -93,158 +93,199 @@ def env_adsr(n, a, d, s, r, sus_len):
     return e[:n] if len(e) >= n else np.pad(e, (0, n - len(e)))
 
 
-# ================= OLD: slow, calm old-hit ballad =================
+# ============ OLD: slow, romantic 70s ballad (light, no heavy lows) ============
 
-BPM_OLD = 72
+BPM_OLD = 70
 BEAT_O = 60 / BPM_OLD
 BAR_O = 4 * BEAT_O
-# the classic old-hit progression C, Am, F, G (bass note first)
+# Cmaj7 Em7 Am7 Fmaj7 Dm7 G7sus4 Cmaj7 F/G: (light bass note, chord)
 CHORDS = [
-    [36, 55, 60, 64, 67],
-    [33, 57, 60, 64, 69],
-    [29, 57, 60, 65, 69],
-    [31, 55, 59, 62, 67],
+    (48, [60, 64, 67, 71]),
+    (52, [59, 62, 64, 67]),
+    (45, [57, 60, 64, 67]),
+    (41, [57, 60, 64, 65]),
+    (50, [57, 60, 62, 65]),
+    (43, [60, 62, 65, 67]),
+    (48, [60, 64, 67, 71]),
+    (43, [57, 60, 65, 69]),
 ]
-FINAL = [36, 48, 55, 60, 64, 67, 72]  # C major, rings out at the end
-# an eight-bar tune over the chords: (MIDI note, beats)
+FINAL = (48, [60, 64, 67, 71, 74])  # Cmaj9, rings out at the end
+# the flute tune, one phrase per bar: (MIDI note, beats)
 MELODY = [
-    [(67, 1), (76, 2), (74, 0.5), (72, 0.5)],
-    [(72, 1.5), (69, 1.5), (67, 1)],
-    [(65, 1), (69, 1), (72, 2)],
-    [(71, 1.5), (74, 1), (67, 1.5)],
-    [(76, 2), (74, 1), (72, 1)],
-    [(72, 1), (76, 1), (79, 2)],
+    [(76, 1.5), (74, 0.5), (76, 1), (79, 1)],
+    [(71, 2), (67, 1), (69, 1)],
+    [(72, 1.5), (71, 0.5), (72, 1), (76, 1)],
+    [(69, 3), (67, 1)],
     [(77, 1.5), (76, 0.5), (74, 1), (72, 1)],
-    [(74, 3), (71, 1)],
+    [(74, 2), (72, 1), (71, 1)],
+    [(72, 1), (76, 1), (79, 1), (83, 1)],
+    [(81, 2), (79, 2)],
 ]
 
 
 def epiano(freq, dur, vel=1.0):
     n = int((dur + 1.5) * SR)
     t = np.arange(n) / SR
-    index = 1.6 * np.exp(-t / 0.4) + 0.12
+    index = 1.4 * np.exp(-t / 0.4) + 0.1
     tone = np.sin(2 * np.pi * freq * t + np.sin(2 * np.pi * freq * t) * index)
     tine = 0.2 * np.sin(2 * np.pi * freq * 4 * t) * np.exp(-t / 0.08)
     e = np.exp(-t / 2.0) * np.clip((dur + 0.4 - t) / 0.4, 0, 1) ** 0.5
     return (tone + tine) * e * vel
 
 
-def warm_pad(freqs, dur, cutoff=1300):
-    """Soft string section: detuned saws, slow attack."""
+def piano(freq, dur, vel=1.0):
+    """Bright acoustic-style piano: decaying, slightly stretched partials."""
+    n = int((dur + 2.0) * SR)
+    t = np.arange(n) / SR
+    sig = np.zeros(n)
+    for k, amp in enumerate((1.0, 0.5, 0.3, 0.18, 0.1, 0.06), start=1):
+        fk = freq * k * (1 + 0.0004 * k * k)
+        sig += amp * np.sin(2 * np.pi * fk * t) * np.exp(-t * (0.6 + 0.5 * k))
+    hammer = 0.05 * hp(rng.standard_normal(n), 2000) * np.exp(-t / 0.01)
+    release = np.clip((dur + 0.6 - t) / 0.6, 0, 1)
+    return (sig + hammer) * release * vel
+
+
+def strings(freqs, dur, cutoff=2600):
+    """Lush string section: many detuned saws, slow swell, vibrato."""
     n = int(dur * SR)
     t = np.arange(n) / SR
     sig = np.zeros(n)
     for f in freqs:
-        for det in (-0.004, 0.0, 0.005):
-            sig += 2 * ((t * f * (1 + det) + rng.random()) % 1) - 1
-    sig = lp(sig, cutoff, 2) * (1 + 0.04 * np.sin(2 * np.pi * 5.0 * t))
-    return sig * env_adsr(n, 1.0, 0.5, 0.85, 1.2, dur) / len(freqs)
+        for det in (-0.006, -0.002, 0.003, 0.007):
+            vib = 1 + 0.003 * np.sin(2 * np.pi * (5 + det * 100) * t)
+            sig += 2 * ((np.cumsum(f * (1 + det) * vib) / SR + rng.random()) % 1) - 1
+    sig = lp(hp(sig, 200), cutoff, 2)
+    return sig * env_adsr(n, 1.2, 0.5, 0.9, 1.5, dur) / (4 * len(freqs))
 
 
-def lead(note, dur):
-    """A soft, voice-like lead with delayed vibrato and a little breath."""
+def choir(freqs, dur):
+    """Soft "aah" voices: saws through two vowel formants."""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    src = np.zeros(n)
+    for f in freqs:
+        for det in (-0.004, 0.004):
+            src += 2 * ((t * f * (1 + det) + rng.random()) % 1) - 1
+    voice = bp(src, 650, 1100) + 0.6 * bp(src, 1000, 1400)
+    return voice * env_adsr(n, 1.5, 0.5, 0.9, 1.5, dur) / (2 * len(freqs))
+
+
+def flute(note, dur):
     n = int((dur + 0.3) * SR)
     t = np.arange(n) / SR
-    vib = 1 + 0.006 * np.sin(2 * np.pi * 5.2 * t) * np.clip((t - 0.25) / 0.3, 0, 1)
+    vib = 1 + 0.005 * np.sin(2 * np.pi * 5.0 * t) * np.clip((t - 0.2) / 0.3, 0, 1)
     phase = 2 * np.pi * np.cumsum(midi(note) * vib) / SR
-    tone = np.sin(phase) + 0.35 * np.sin(2 * phase) + 0.12 * np.sin(3 * phase)
-    breath = 0.04 * bp(rng.standard_normal(n), 1500, 4000)
-    return (tone + breath) * env_adsr(n, 0.08, 0.2, 0.8, 0.3, dur)
+    tone = np.sin(phase) + 0.15 * np.sin(2 * phase) + 0.05 * np.sin(3 * phase)
+    breath = 0.06 * bp(rng.standard_normal(n), 1800, 5000)
+    return (tone + breath) * env_adsr(n, 0.07, 0.15, 0.85, 0.35, dur)
 
 
-def room(x, seconds=1.6, mix=0.3):
-    """A simple 80s-style reverb: convolve with a decaying noise tail."""
+def celesta(note):
+    """Glockenspiel / celesta sparkle."""
+    n = int(1.6 * SR)
+    t = np.arange(n) / SR
+    f = midi(note)
+    return (np.sin(2 * np.pi * f * t) + 0.4 * np.sin(2 * np.pi * f * 2.76 * t) * np.exp(-t / 0.15)) * np.exp(-t / 0.5)
+
+
+def harp_gliss(start_note, steps=12, length=1.0):
+    """A quick upward sweep of plucked notes on the C major scale."""
+    scale = [0, 2, 4, 5, 7, 9, 11]
+    out = np.zeros(int((length + 2.0) * SR))
+    for k in range(steps):
+        note = start_note + 12 * (k // 7) + scale[k % 7]
+        n = int(1.8 * SR)
+        t = np.arange(n) / SR
+        f = midi(note)
+        pluck = (np.sin(2 * np.pi * f * t) + 0.3 * np.sin(4 * np.pi * f * t)) * np.exp(-t / 0.6)
+        i = int(k * length / steps * SR)
+        out[i : i + n] += pluck[: len(out) - i]
+    return out / 4
+
+
+def snap():
+    """A finger snap: short bright click with a little body."""
+    n = int(0.12 * SR)
+    t = np.arange(n) / SR
+    return (bp(rng.standard_normal(n), 1800, 5000) * np.exp(-t / 0.012) + 0.3 * np.sin(2 * np.pi * 1100 * t) * np.exp(-t / 0.008))
+
+
+def room(x, seconds=2.0, mix=0.3):
+    """A lush 70s-style reverb: convolve with a decaying noise tail."""
     from scipy.signal import fftconvolve
 
     n = int(seconds * SR)
-    tail = lp(rng.standard_normal(n), 3500) * np.exp(-np.arange(n) / SR / (seconds / 5))
+    tail = lp(rng.standard_normal(n), 4500) * np.exp(-np.arange(n) / SR / (seconds / 5))
     tail /= np.sqrt(np.sum(tail**2))
     return x + mix * fftconvolve(x, tail)[: len(x)]
-
-
-def soft_kick():
-    t = np.arange(int(0.35 * SR)) / SR
-    f = 46 + 50 * np.exp(-t / 0.025)
-    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.16)
-
-
-def soft_snare():
-    n = int(0.3 * SR)
-    t = np.arange(n) / SR
-    body = np.sin(2 * np.pi * 180 * t) * np.exp(-t / 0.04)
-    return 0.5 * body + bp(rng.standard_normal(n), 1200, 6000) * np.exp(-t / 0.09)
-
-
-def hat():
-    n = int(0.05 * SR)
-    t = np.arange(n) / SR
-    return hp(rng.standard_normal(n), 7000) * np.exp(-t / 0.015)
 
 
 def old_stem():
     st = Stem()
     end = TL["outroChord"]
-    drums = Stem()
     bar = 0
     while bar * BAR_O < end - 0.2:
         t0 = bar * BAR_O
-        root, *voicing = CHORDS[bar % 4]
-        st.add(warm_pad([midi(n) for n in voicing], BAR_O + 0.6), t0, 0.12)
-        # gently broken chord on the electric piano, eighth notes
-        pattern = [voicing[0], voicing[1], voicing[2], voicing[1], voicing[3], voicing[2], voicing[1], voicing[2]]
+        bass, chord = CHORDS[bar % 8]
+        cf = [midi(n) for n in chord]
+        st.add(strings(cf + [midi(chord[-1] + 12)], BAR_O + 0.8), t0, 0.22, pan=-0.2)
+        # Rhodes holds the chord, piano plays a gentle broken pattern
+        st.add(sum(epiano(f, BAR_O * 0.95, 0.5) for f in cf), t0, 0.07, pan=0.3)
+        pattern = [chord[0], chord[2], chord[3], chord[2] + 12, chord[1] + 12, chord[3], chord[2], chord[1]]
         for k, m in enumerate(pattern):
-            st.add(epiano(midi(m), BEAT_O * 0.9, 0.5), t0 + k * BEAT_O / 2, 0.11, pan=0.25 * (-1) ** k)
-        # bass: root on 1, fifth on 3
-        for beat, note in ((0, root), (2, root + 7)):
-            n = int(BEAT_O * 2 * SR)
-            t = np.arange(n) / SR
-            f = midi(note + 12)
-            bass = np.sin(2 * np.pi * f * t) + 0.25 * np.sin(4 * np.pi * f * t)
-            st.add(bass * env_adsr(n, 0.02, 0.3, 0.7, 0.4, BEAT_O * 1.8), t0 + beat * BEAT_O, 0.28)
-        # the tune, after a four-bar intro
-        if bar >= 4:
+            st.add(piano(midi(m), BEAT_O * 0.6, 0.5), t0 + k * BEAT_O / 2, 0.08, pan=-0.3)
+        # a light, round bass (kept out of the low rumble)
+        n = int(BAR_O * SR)
+        t = np.arange(n) / SR
+        b = np.sin(2 * np.pi * midi(bass) * t) * env_adsr(n, 0.03, 0.4, 0.6, 0.5, BAR_O * 0.9)
+        st.add(hp(b, 90), t0, 0.12)
+        # finger snaps on 2 and 4, a soft shaker on the eighths
+        for beat in (1, 3):
+            st.add(snap(), t0 + beat * BEAT_O, 0.16, pan=0.15)
+        for e in range(8):
+            m = int(0.06 * SR)
+            sh = bp(rng.standard_normal(m), 5000, 10000) * np.exp(-np.arange(m) / SR / 0.02)
+            st.add(sh, t0 + e * BEAT_O / 2, 0.025, pan=0.35)
+        # the flute tune after a two-bar intro, choir "aah" in the second half
+        if bar >= 2:
             tb = t0
-            for note, beats in MELODY[(bar - 4) % 8]:
-                st.add(lead(note, beats * BEAT_O * 0.95), tb, 0.13)
+            for note, beats in MELODY[(bar - 2) % 8]:
+                st.add(flute(note, beats * BEAT_O * 0.95), tb, 0.12, pan=0.05)
                 tb += beats * BEAT_O
-        # quiet ballad drums
-        for beat in range(4):
-            tb = t0 + beat * BEAT_O
-            if beat in (0, 2):
-                drums.add(soft_kick(), tb, 0.4)
-            if beat in (1, 3):
-                drums.add(soft_snare(), tb, 0.22)
-            for e in range(2):
-                drums.add(hat(), tb + e * BEAT_O / 2, 0.03 if e else 0.045)
+        if (bar // 8) % 2 == 1:
+            st.add(choir(cf, BAR_O + 0.6), t0, 0.08)
+        # celesta sparkle every other bar
+        if bar % 2 == 1:
+            for k, m in enumerate([chord[3] + 12, chord[2] + 24, chord[3] + 24]):
+                st.add(celesta(m), t0 + (2 + k * 0.5) * BEAT_O, 0.05, pan=0.4)
         bar += 1
-    st.L += room(drums.L, 2.2, 0.6)
-    st.R += room(drums.R, 2.2, 0.6)
-    st.L, st.R = room(st.L, 1.6, 0.25), room(st.R, 1.6, 0.25)
-    # final chord: strings and electric piano ring out to the end
+    # harp sweeps: on the PLAY button and at the start of every eight bars
+    st.add(harp_gliss(60, 14, 1.0), TL["then"][0], 0.35, pan=-0.1)
+    for b8 in range(0, bar, 8):
+        st.add(harp_gliss(60, 12, 1.2), b8 * BAR_O, 0.25, pan=-0.1)
+    # final chord: strings, choir, piano and a last harp sweep ring out
     dur = LENGTH - end
-    st.add(warm_pad([midi(n) for n in FINAL[1:]], dur, cutoff=1100), end, 0.28)
-    st.add(sum(epiano(midi(n), 4.0, 0.7) for n in FINAL), end + 0.2, 0.14)
-    st.add(lead(72, 3.5), end + 0.4, 0.12)
+    fb, fch = FINAL
+    fcf = [midi(n) for n in fch]
+    st.add(strings(fcf, dur), end, 0.24)
+    st.add(choir(fcf, dur), end, 0.06)
+    st.add(sum(piano(f, 4.0, 0.6) for f in fcf), end + 0.3, 0.08)
+    st.add(harp_gliss(60, 14, 1.4), end, 0.3)
+    for k, m in enumerate([88, 84, 91]):
+        st.add(celesta(m), end + 1.6 + k * 0.4, 0.05, pan=0.4)
 
-    # make it sound like an old record playing on an old TV / cassette:
-    # mono, a small speaker's narrow band, tape saturation, wow and
-    # flutter, then hiss and vinyl crackle on top
+    # warm 70s record: lush reverb, gentle tape wow, soft highs, light hiss
     t = np.arange(N) / SR
-    x = 0.5 * (st.L + st.R)
-    delay = (0.006 + 0.0018 * np.sin(2 * np.pi * 0.45 * t) + 0.0001 * np.sin(2 * np.pi * 6.3 * t)) * SR
-    x = np.interp(np.clip(np.arange(N) - delay, 0, N - 1), np.arange(N), x)
-    x = bp(x, 150, 4500, order=2)
-    x = np.tanh(1.8 * x / (np.max(np.abs(x)) + 1e-9))
-    x = lp(x, 5500, 2)
-    hiss = 0.01 * bp(rng.standard_normal(N), 2000, 8000)
-    crackle = np.zeros(N)
-    pops = rng.random(N) < 4 / SR  # about four crackles a second
-    crackle[pops] = rng.standard_normal(pops.sum()) * 0.5
-    crackle = hp(crackle, 1500) + lp(crackle, 300) * 0.4
-    rumble = 0.008 * lp(rng.standard_normal(N), 60)
-    x = x + hiss + 0.3 * crackle + rumble
-    st.L = x.copy()
-    st.R = x.copy()
+    delay = (0.004 + 0.0007 * np.sin(2 * np.pi * 0.5 * t)) * SR
+    idx = np.clip(np.arange(N) - delay, 0, N - 1)
+    for ch_name in ("L", "R"):
+        x = getattr(st, ch_name)
+        x = room(x, 2.4, 0.35)
+        x = np.interp(idx, np.arange(N), x)
+        x = lp(hp(x, 80), 9000, 2)
+        x += 0.002 * hp(rng.standard_normal(N), 3000)
+        setattr(st, ch_name, x)
     return st
 
 
@@ -389,6 +430,6 @@ def sfx_stem():
 
 
 if __name__ == "__main__":
-    old_stem().write("old", peak=0.4)
+    old_stem().write("old", peak=0.55)
     new_stem().write("new")
     sfx_stem().write("sfx", peak=0.8)
