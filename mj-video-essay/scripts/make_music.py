@@ -2,9 +2,10 @@
 
 Three stems, each the full 90 s, written to public/music/ as MP3:
 
-  old  calm 1980s-style track: electric piano, warm pad, soft bass and
-           shaker, 80 BPM in C major, with tape wobble and hiss. Played over
-           the past (1983, the "then" halves) and the final chord.
+  old  calm early-80s disco, 108 BPM: soft four-on-the-floor kick,
+           open hats, octave disco bass, funk-guitar chops, strings and
+           electric piano, with a warm tape feel. Played over the past
+           (the "then" shots) and the final chord.
   new  modern, slightly uneasy track: heartbeat kick, ticking hats,
            pulsing D-minor bass, a cold pad with a dissonant shimmer. Builds
            under the name montage, drops at "no single answer".
@@ -91,19 +92,19 @@ def env_adsr(n, a, d, s, r, sus_len):
     return e[:n] if len(e) >= n else np.pad(e, (0, n - len(e)))
 
 
-# ======================= OLD: calm 1980s =======================
+# ==================== OLD: calm early-80s disco ====================
 
-BPM_OLD = 80
+BPM_OLD = 108
 BEAT_O = 60 / BPM_OLD
 BAR_O = 4 * BEAT_O
-# Cmaj7, Am7, Fmaj7, G6 (+ Cmaj9 for the final chord)
+# Dm9, G13, Cmaj9, Am9 (bass note first), one bar each
 CHORDS = [
-    [48, 55, 59, 64, 67],
-    [45, 52, 55, 60, 64],
-    [41, 48, 52, 57, 60],
-    [43, 50, 55, 59, 64],
+    [38, 53, 57, 60, 64],
+    [43, 53, 57, 59, 64],
+    [36, 52, 55, 59, 62],
+    [33, 55, 59, 60, 64],
 ]
-FINAL = [36, 48, 55, 59, 62, 64, 71]
+FINAL = [36, 48, 55, 59, 62, 64, 71]  # Cmaj9, rings out at the end
 
 
 def epiano(freq, dur, vel=1.0):
@@ -117,59 +118,98 @@ def epiano(freq, dur, vel=1.0):
     return (tone + tine) * e * vel
 
 
-def warm_pad(freqs, dur):
+def warm_pad(freqs, dur, cutoff=1500):
+    """Soft string section: detuned saws, slow attack."""
     n = int(dur * SR)
     t = np.arange(n) / SR
     sig = np.zeros(n)
     for f in freqs:
-        for det in (-0.004, 0.0, 0.005):
+        for det in (-0.005, 0.0, 0.006):
             sig += 2 * ((t * f * (1 + det) + rng.random()) % 1) - 1
-    sig = lp(sig, 1100, 2)
-    return sig * env_adsr(n, 0.9, 0.5, 0.8, 1.0, dur) / len(freqs)
+    sig = lp(sig, cutoff, 2) * (1 + 0.04 * np.sin(2 * np.pi * 5.5 * t))
+    return sig * env_adsr(n, 0.5, 0.4, 0.85, 0.8, dur) / len(freqs)
+
+
+def soft_kick():
+    t = np.arange(int(0.3 * SR)) / SR
+    f = 48 + 60 * np.exp(-t / 0.02)
+    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.13)
+
+
+def hat(open_=False):
+    n = int((0.16 if open_ else 0.04) * SR)
+    t = np.arange(n) / SR
+    return hp(rng.standard_normal(n), 7000) * np.exp(-t / (0.06 if open_ else 0.012))
+
+
+def clap():
+    n = int(0.35 * SR)
+    t = np.arange(n) / SR
+    env = np.exp(-t / 0.12)
+    for k in (0.0, 0.01, 0.02):
+        env += 0.5 * np.exp(-np.clip(t - k, 0, None) / 0.005) * (t >= k)
+    return bp(rng.standard_normal(n), 900, 4000) * env * 0.5
+
+
+def disco_bass(note, dur):
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    f = midi(note)
+    saw = 2 * ((t * f) % 1) - 1
+    body = lp(saw, 700, 2) + 0.6 * np.sin(2 * np.pi * f * t)
+    return body * np.exp(-t / 0.16) * np.clip((dur - t) / 0.01, 0, 1)
+
+
+def guitar_chop(notes):
+    """Muted funk-guitar stab: bright, very short."""
+    n = int(0.09 * SR)
+    t = np.arange(n) / SR
+    sig = sum(2 * ((t * midi(m) + rng.random()) % 1) - 1 for m in notes)
+    return bp(sig, 700, 3500) * np.exp(-t / 0.025) / len(notes)
 
 
 def old_stem():
     st = Stem()
-    bars = int(TL["outroChord"] / BAR_O) + 1
-    for b in range(bars):
-        t0 = b * BAR_O
-        if t0 >= TL["outroChord"] - 0.2:
-            break
-        ch = CHORDS[b % 4]
-        st.add(warm_pad([midi(n) for n in ch[1:]], BAR_O + 0.6), t0, 0.22)
-        # gentle electric-piano pattern: chord on 1, broken notes after
-        st.add(sum(epiano(midi(n), BEAT_O * 1.8, 0.6) for n in ch[1:4]), t0, 0.22)
-        for k, n in enumerate([ch[2], ch[3], ch[4], ch[3]]):
-            st.add(epiano(midi(n + 12), BEAT_O * 0.9, 0.5), t0 + (1 + k * 0.75) * BEAT_O, 0.16, pan=0.3 * (-1) ** k)
-        # bass on 1 and 3
-        for beat in (0, 2):
-            n = int(BEAT_O * 1.8 * SR)
-            t = np.arange(n) / SR
-            bass = np.sin(2 * np.pi * midi(ch[0] - 12) * t) + 0.3 * np.sin(4 * np.pi * midi(ch[0] - 12) * t)
-            st.add(bass * env_adsr(n, 0.01, 0.2, 0.6, 0.3, BEAT_O * 1.5), t0 + beat * BEAT_O, 0.3)
-        # soft shaker on eighths
-        for e in range(8):
-            n = int(0.09 * SR)
-            t = np.arange(n) / SR
-            sh = bp(rng.standard_normal(n), 4000, 9000) * np.exp(-t / 0.03)
-            st.add(sh, t0 + e * BEAT_O / 2, 0.05 if e % 2 else 0.08, pan=0.4)
-    # final chord: rings out from the outro to the end
-    t0 = TL["outroChord"]
-    dur = LENGTH - t0
-    st.add(warm_pad([midi(n) for n in FINAL[1:]], dur), t0, 0.3)
-    st.add(sum(epiano(midi(n), 4.0, 0.7) for n in FINAL), t0 + 0.2, 0.18)
-    st.add(sum(epiano(midi(n + 12), 3.0, 0.4) for n in FINAL[3:]), t0 + 1.7, 0.1)
+    end = TL["outroChord"]
+    b8 = BEAT_O / 2
+    bar = 0
+    while bar * BAR_O < end - 0.2:
+        t0 = bar * BAR_O
+        root, *voicing = CHORDS[bar % 4]
+        # strings hold the chord; electric piano on 1 and the "and" of 2
+        st.add(warm_pad([midi(n) for n in voicing], BAR_O + 0.4), t0, 0.16, pan=-0.15)
+        for hit in (0.0, 1.5):
+            st.add(sum(epiano(midi(n), BEAT_O * 0.9, 0.5) for n in voicing), t0 + hit * BEAT_O, 0.13, pan=-0.35)
+        for beat in range(4):
+            tb = t0 + beat * BEAT_O
+            st.add(soft_kick(), tb, 0.45)  # four on the floor, kept soft
+            st.add(hat(True), tb + b8, 0.07, pan=0.25)  # open hat on the off-beat
+            for s in (0, 2):
+                st.add(hat(), tb + s * BEAT_O / 4, 0.03, pan=0.3)
+            if beat in (1, 3):
+                st.add(clap(), tb, 0.12)
+            # octave-jumping disco bass on eighths
+            for e in range(2):
+                note = root - 12 + (12 if e else 0)
+                st.add(disco_bass(note, b8 * 0.9), tb + e * b8, 0.3)
+            # funk guitar chops on the off-beats
+            st.add(guitar_chop([n + 12 for n in voicing[:3]]), tb + b8, 0.1, pan=0.45)
+        bar += 1
+    # final chord: strings and electric piano ring out to the end, no drums
+    dur = LENGTH - end
+    st.add(warm_pad([midi(n) for n in FINAL[1:]], dur, cutoff=1200), end, 0.3)
+    st.add(sum(epiano(midi(n), 4.0, 0.7) for n in FINAL), end + 0.2, 0.16)
+    st.add(sum(epiano(midi(n + 12), 3.0, 0.4) for n in FINAL[3:]), end + 1.7, 0.08)
 
-    # tape: slow pitch wobble (variable delay), a little hiss, warm tone
+    # old-record warmth: gentle tape wow, rolled-off highs, a little hiss
     t = np.arange(N) / SR
-    # about 7 cents of slow wow and a hint of flutter
-    delay = (0.004 + 0.0012 * np.sin(2 * np.pi * 0.55 * t) + 0.00004 * np.sin(2 * np.pi * 5.1 * t)) * SR
+    delay = (0.004 + 0.0008 * np.sin(2 * np.pi * 0.5 * t)) * SR
     idx = np.clip(np.arange(N) - delay, 0, N - 1)
     for ch_name in ("L", "R"):
         x = getattr(st, ch_name)
         x = np.interp(idx, np.arange(N), x)
-        x = lp(x, 6500, 2)
-        x += 0.004 * hp(rng.standard_normal(N), 3000)
+        x = lp(x, 8000, 2)
+        x += 0.003 * hp(rng.standard_normal(N), 3000)
         setattr(st, ch_name, x)
     return st
 
