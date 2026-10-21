@@ -22,10 +22,16 @@ const oldWindows: [number, number][] = [
   [T.outroChord, T.duration - 1],
 ];
 
+// Music dips under the tape rewind and the PLAY click so they are heard.
+const REWIND: [number, number] = [T.then[0] - 0.7, T.then[0] + 0.05];
+const duck = (t: number) => 1 - 0.8 * windowGain(t, REWIND[0], REWIND[1]);
+
 export const oldGain = (t: number) =>
-  Math.max(...oldWindows.map(([a, b]) => windowGain(t, a, b)));
+  duck(t) * Math.max(...oldWindows.map(([a, b]) => windowGain(t, a, b)));
 
 export const newGain = (t: number) => {
   if (t >= T.outroChord) return windowGain(t, -1, T.outroChord - 0.4);
-  return 1 - oldGain(t);
+  return (
+    duck(t) * (1 - Math.max(...oldWindows.map(([a, b]) => windowGain(t, a, b))))
+  );
 };

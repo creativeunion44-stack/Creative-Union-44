@@ -324,11 +324,15 @@ def sfx_stem():
     t = np.arange(n) / SR
     f = 500 + 2600 * (t / 1.1) ** 1.5 + 120 * np.sin(2 * np.pi * 23 * t)
     squeal = np.sin(2 * np.pi * np.cumsum(f) / SR) * 0.4 + bp(rng.standard_normal(n), 2000, 7000) * 0.6
-    st.add(squeal * np.sin(np.pi * t / 1.1), t_rw, 0.35)
+    st.add(squeal * np.sin(np.pi * t / 1.1), t_rw, 0.7)
+    # the PLAY key: a sharp plastic click, then the mechanism engaging
     n = int(0.25 * SR)
     t = np.arange(n) / SR
+    click = hp(rng.standard_normal(n), 2500) * np.exp(-t / 0.004)
+    snap = np.sin(2 * np.pi * 1400 * t) * np.exp(-t / 0.006)
     clunk = lp(rng.standard_normal(n), 1800) * np.exp(-t / 0.02) + np.sin(2 * np.pi * 90 * t) * np.exp(-t / 0.06)
-    st.add(clunk, TL["then"][0] - 0.05, 0.6)
+    st.add(click + 0.5 * snap, TL["then"][0] - 0.12, 1.0)
+    st.add(clunk, TL["then"][0] - 0.06, 0.7)
     # whoosh as each split screen opens
     for r in TL["reasons"]:
         n = int(0.8 * SR)
@@ -338,7 +342,7 @@ def sfx_stem():
         for i in range(0, n, 1024):
             fc = 400 + 3000 * np.sin(np.pi * i / n)
             w[i : i + 1024] = bp(noise[i : i + 1024], fc, fc * 1.8)
-        st.add(w * np.sin(np.pi * t / 0.8) ** 2, r["start"] - 0.1, 0.25)
+        st.add(w * np.sin(np.pi * t / 0.8) ** 2, r["start"] - 0.1, 0.45)
     # phone put down on the nightstand, then the screen lock click
     n = int(0.3 * SR)
     t = np.arange(n) / SR
@@ -346,7 +350,7 @@ def sfx_stem():
     st.add(thud, TL["end"][0] + 1.33, 0.5)
     n = int(0.05 * SR)
     t = np.arange(n) / SR
-    st.add(hp(rng.standard_normal(n), 2500) * np.exp(-t / 0.008), 83.3, 0.4)
+    st.add(hp(rng.standard_normal(n), 2500) * np.exp(-t / 0.008), 83.3, 0.8)
     return st
 
 
