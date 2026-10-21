@@ -159,17 +159,23 @@ const ThenScene: React.FC<Props> = ({ lang }) => {
       <Caption
         text={tx("thriller")}
         {...at(s, 20.2, 22.6)}
-        top={1240}
-        size={64}
+        top={1170}
+        size={60}
       />
       <Caption
         text={tx("thrillerSource")}
         {...at(s, 20.6, 22.6)}
-        top={1440}
+        top={1460}
         size={32}
         color="rgba(245,241,232,0.8)"
       />
-      <Caption text={tx("question")} {...at(s, 22.7, 25)} big top={760} />
+      <Caption
+        text={tx("question")}
+        {...at(s, 22.7, 25)}
+        big
+        size={88}
+        top={640}
+      />
     </AbsoluteFill>
   );
 };
@@ -406,13 +412,13 @@ const End: React.FC<Props> = ({ lang }) => {
         text={tx("finalQ")}
         {...at(s, 83.8, 90.5)}
         big
-        size={120}
-        top={560}
+        size={104}
+        top={480}
       />
       <Caption
         text={tx("comments")}
         {...at(s, 85, 90.5)}
-        top={1060}
+        top={1120}
         size={64}
         color={GOLD}
       />
@@ -421,7 +427,7 @@ const End: React.FC<Props> = ({ lang }) => {
           style={{
             position: "absolute",
             left: 80,
-            top: 1170 + bounce,
+            top: 1230 + bounce,
             fontFamily: "Oswald",
             fontSize: 110,
             color: GOLD,
@@ -446,7 +452,7 @@ export const RoughCut: React.FC<Props> = ({ lang }) => {
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       <Audio
-        src={staticFile("music/old-song.mp3")}
+        src={staticFile("music/old.mp3")}
         volume={(f) => 0.9 * oldGain(f / FPS)}
       />
       <Audio
@@ -488,13 +494,18 @@ export const RoughCut: React.FC<Props> = ({ lang }) => {
 };
 
 export const RoughCutComposition: React.FC = () => (
-  <Composition
-    id="RoughCutEN"
-    component={RoughCut}
-    durationInFrames={DURATION}
-    fps={FPS}
-    width={WIDTH}
-    height={HEIGHT}
-    defaultProps={{ lang: "en" as Lang }}
-  />
+  <>
+    {(["en", "ru"] as const).map((lang) => (
+      <Composition
+        key={lang}
+        id={`RoughCut${lang.toUpperCase()}`}
+        component={RoughCut}
+        durationInFrames={DURATION}
+        fps={FPS}
+        width={WIDTH}
+        height={HEIGHT}
+        defaultProps={{ lang: lang as Lang }}
+      />
+    ))}
+  </>
 );

@@ -12,22 +12,22 @@ export const CAPTIONS = {
   },
   year: { en: "Back then", ru: "Раньше" },
   sameVideo: {
-    en: "The whole world watched the same music video.",
-    ru: "Весь мир смотрел один и тот же клип.",
+    en: "The whole world watched Michael Jackson.",
+    ru: "Весь мир смотрел Майкла Джексона.",
   },
   thriller: {
-    en: "Thriller became the best-selling album in history.",
-    ru: "Thriller стал самым продаваемым альбомом в истории.",
+    en: "His album Thriller became the best-selling album in history.",
+    ru: "Его альбом Thriller стал самым продаваемым в истории.",
   },
   thrillerSource: {
     en: "Source: Guinness World Records",
     ru: "Источник: Книга рекордов Гиннесса",
   },
   question: {
-    en: "So why can't anyone repeat that fame?",
-    ru: "Почему никто не может повторить такую славу?",
+    en: "So why can't anyone be as famous as Michael Jackson today?",
+    ru: "Почему сегодня никто не может стать таким же знаменитым, как Майкл Джексон?",
   },
-  then: { en: "THEN", ru: "ТОГДА" },
+  then: { en: "THEN", ru: "РАНЬШЕ" },
   now: { en: "NOW", ru: "СЕЙЧАС" },
   reason: { en: "Reason", ru: "Причина" },
   r1Then: {
@@ -56,8 +56,8 @@ export const CAPTIONS = {
     ru: "Миллионы фанатов — но не весь мир сразу.",
   },
   finalQ: {
-    en: "Who is the star of YOUR generation?",
-    ru: "Кто звезда ТВОЕГО поколения?",
+    en: "Who is the Michael Jackson of YOUR generation?",
+    ru: "Кто Майкл Джексон ТВОЕГО поколения?",
   },
   comments: { en: "Tell us in the comments", ru: "Напиши в комментариях" },
   credits: {
