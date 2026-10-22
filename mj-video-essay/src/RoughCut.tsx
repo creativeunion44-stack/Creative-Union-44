@@ -28,6 +28,22 @@ import {
   WIDTH,
 } from "./theme";
 import { DURATION, newGain, oldGain, T } from "./timeline";
+import voice from "./voice.json";
+
+// The music dips while the voice-over speaks (src/voice.json, written by
+// scripts/prepare_voice.py).
+const voiceDuck = (t: number) => {
+  let g = 1;
+  for (const v of voice) {
+    const a = v.from - 0.25;
+    const b = v.to + 0.35;
+    if (t > a && t < b) {
+      const k = Math.min(1, (t - a) / 0.25, (b - t) / 0.35);
+      g = Math.min(g, 1 - 0.6 * k);
+    }
+  }
+  return g;
+};
 
 type Props = { lang: Lang };
 
@@ -453,13 +469,14 @@ export const RoughCut: React.FC<Props> = ({ lang }) => {
     <AbsoluteFill style={{ background: "#000" }}>
       <Audio
         src={staticFile("music/old.mp3")}
-        volume={(f) => 0.9 * oldGain(f / FPS)}
+        volume={(f) => 0.9 * oldGain(f / FPS) * voiceDuck(f / FPS)}
       />
       <Audio
         src={staticFile("music/new.mp3")}
-        volume={(f) => 0.8 * newGain(f / FPS)}
+        volume={(f) => 0.8 * newGain(f / FPS) * voiceDuck(f / FPS)}
       />
       <Audio src={staticFile("music/sfx.mp3")} volume={0.9} />
+      <Audio src={staticFile("music/voice.mp3")} volume={1} />
       <Sequence {...span(T.hook)}>
         <Hook lang={lang} />
       </Sequence>
