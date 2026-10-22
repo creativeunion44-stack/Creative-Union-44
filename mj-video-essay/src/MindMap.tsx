@@ -16,8 +16,12 @@ type Branch = {
 const W = 1920;
 const H = 1080;
 const CX = W / 2;
-const CY = 550;
-const CARD_W = 520;
+const CY = 555;
+const CARD_W = 540;
+
+const COL_L = 90;
+const COL_R = W - 90 - CARD_W;
+const ROWS = [165, 450, 735];
 
 const BRANCHES: Branch[] = [
   {
@@ -25,31 +29,66 @@ const BRANCHES: Branch[] = [
     color: GOLD,
     items: [
       "Few TV channels, MTV for everyone",
+      "A music video was a world event",
       "Thriller: best-selling album ever",
     ],
-    x: 110,
-    y: 200,
+    x: COL_L,
+    y: ROWS[0],
   },
   {
-    title: "Now",
-    color: "#8FAEF7",
-    items: ["Everyone has their own feed", "Thousands of new songs a day"],
-    x: W - 110 - CARD_W,
-    y: 200,
+    title: "Story",
+    color: CREAM,
+    items: [
+      "Hook: scrolling at night",
+      "Three reasons: then / now",
+      "End: a question for viewers",
+    ],
+    x: COL_L,
+    y: ROWS[1],
   },
   {
     title: "How to film",
     color: RED,
-    items: ["Split screen: then / now", "Captions and music, no voice"],
-    x: 110,
-    y: 720,
+    items: [
+      "Night shots on my phone",
+      "Stock clips for the past",
+      "Split screen: then / now",
+    ],
+    x: COL_L,
+    y: ROWS[2],
+  },
+  {
+    title: "Now",
+    color: "#8FAEF7",
+    items: [
+      "Everyone has their own feed",
+      "Thousands of new songs a day",
+      "A trend lasts a few days",
+    ],
+    x: COL_R,
+    y: ROWS[0],
+  },
+  {
+    title: "Look and sound",
+    color: "#3FA7A0",
+    items: [
+      "Warm past, cold blue present",
+      "Captions tell the story, no voice",
+      "70s ballad vs modern music",
+    ],
+    x: COL_R,
+    y: ROWS[1],
   },
   {
     title: "Audience",
     color: BLUE,
-    items: ["Adults 20–40", "TikTok, Reels, Shorts"],
-    x: W - 110 - CARD_W,
-    y: 720,
+    items: [
+      "Adults 20–40",
+      "TikTok, Reels, Shorts",
+      "A question in the comments",
+    ],
+    x: COL_R,
+    y: ROWS[2],
   },
 ];
 
@@ -99,12 +138,11 @@ const Card: React.FC<{ b: Branch; width: number }> = ({ b, width }) => (
 );
 
 const MindMap: React.FC = () => {
-  const lines: [number, number, string][] = [
-    [110 + CARD_W, 290, GOLD],
-    [W - 110 - CARD_W, 290, "#8FAEF7"],
-    [110 + CARD_W, 810, RED],
-    [W - 110 - CARD_W, 810, BLUE],
-  ];
+  const lines: [number, number, string][] = BRANCHES.map((b) => [
+    b.x === COL_L ? COL_L + CARD_W : COL_R,
+    b.y + 95,
+    b.color,
+  ]);
   return (
     <AbsoluteFill style={{ background: INK }}>
       <div
