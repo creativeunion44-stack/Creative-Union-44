@@ -39,7 +39,7 @@ const voiceDuck = (t: number) => {
     const b = v.to + 0.35;
     if (t > a && t < b) {
       const k = Math.min(1, (t - a) / 0.25, (b - t) / 0.35);
-      g = Math.min(g, 1 - 0.6 * k);
+      g = Math.min(g, 1 - 0.8 * k);
     }
   }
   return g;
