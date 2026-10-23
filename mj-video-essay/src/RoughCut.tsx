@@ -29,6 +29,7 @@ import {
 } from "./theme";
 import { DURATION, newGain, oldGain, T } from "./timeline";
 import voice from "./voice.json";
+import { CITY_DURATION, CityPullback } from "./CityPullback";
 
 // The music dips while the voice-over speaks (src/voice.json, written by
 // scripts/prepare_voice.py).
@@ -45,7 +46,7 @@ const voiceDuck = (t: number) => {
   return g;
 };
 
-type Props = { lang: Lang };
+type Props = { lang: Lang; city?: boolean };
 
 type Take = {
   src: string; // file in public/footage, without .mp4
@@ -385,7 +386,7 @@ const Who: React.FC<Props> = ({ lang }) => {
   );
 };
 
-const End: React.FC<Props> = ({ lang }) => {
+const End: React.FC<Props> = ({ lang, city }) => {
   const tx = useText(lang);
   const frame = useCurrentFrame();
   const [s] = T.end;
@@ -393,17 +394,24 @@ const End: React.FC<Props> = ({ lang }) => {
   const bounce = Math.abs(Math.sin((frame / FPS) * 3)) * 18;
   return (
     <AbsoluteFill>
-      <Shots
-        shots={[
-          { from: 0, to: 5, era: "now", take: { src: "now-3960", from: 4 } },
-          {
-            from: 5,
-            to: 8.5,
-            era: "now",
-            take: { src: "now-3961", from: 0, rate: 0.4 },
-          },
-        ]}
-      />
+      {city ? (
+        // alternative ending: pull back from her window to the whole city
+        <Sequence durationInFrames={sec(CITY_DURATION)}>
+          <CityPullback />
+        </Sequence>
+      ) : (
+        <Shots
+          shots={[
+            { from: 0, to: 5, era: "now", take: { src: "now-3960", from: 4 } },
+            {
+              from: 5,
+              to: 8.5,
+              era: "now",
+              take: { src: "now-3961", from: 0, rate: 0.4 },
+            },
+          ]}
+        />
+      )}
       <Shade top={230} height={560} />
       <Caption text={tx("niche")} {...at(s, 75.5, 79)} big top={330} />
       <Caption
@@ -462,7 +470,7 @@ const End: React.FC<Props> = ({ lang }) => {
   );
 };
 
-export const RoughCut: React.FC<Props> = ({ lang }) => {
+export const RoughCut: React.FC<Props> = ({ lang, city }) => {
   const frame = useCurrentFrame();
   const rewindFrom = sec(T.then[0] - 0.6);
   return (
@@ -496,7 +504,7 @@ export const RoughCut: React.FC<Props> = ({ lang }) => {
         <Who lang={lang} />
       </Sequence>
       <Sequence {...span(T.end)}>
-        <End lang={lang} />
+        <End lang={lang} city={city} />
       </Sequence>
       <RewindGlitch
         progress={interpolate(
@@ -524,5 +532,14 @@ export const RoughCutComposition: React.FC = () => (
         defaultProps={{ lang: lang as Lang }}
       />
     ))}
+    <Composition
+      id="RoughCutENCity"
+      component={RoughCut}
+      durationInFrames={DURATION}
+      fps={FPS}
+      width={WIDTH}
+      height={HEIGHT}
+      defaultProps={{ lang: "en" as Lang, city: true }}
+    />
   </>
 );
