@@ -1,5 +1,6 @@
 import "./index.css";
 import "./fonts";
+import { CityPullbackComposition } from "./CityPullback";
 import { ClipCompositions } from "./Clips";
 import { EssayCompositions } from "./Essay";
 import { MindMapComposition } from "./MindMap";
@@ -12,6 +13,7 @@ export const RemotionRoot: React.FC = () => {
       <ClipCompositions />
       <RoughCutComposition />
       <MindMapComposition />
+      <CityPullbackComposition />
     </>
   );
 };
