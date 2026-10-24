@@ -8,3 +8,4 @@ out
 
 # Real footage: own shots and licensed/stock clips (kept out of the public repo)
 public/footage
+source-audio/*.wav

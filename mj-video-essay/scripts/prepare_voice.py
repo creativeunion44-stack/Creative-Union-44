@@ -13,6 +13,7 @@ Usage: python3 scripts/prepare_voice.py   (needs ffmpeg)
 """
 
 import json
+import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -21,8 +22,11 @@ import numpy as np
 from scipy.io import wavfile
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "source-audio" / "voiceover-original.ogg"
-OUT = ROOT / "public" / "music" / "voice.mp3"
+# VOICE_SRC: an alternative take of the same recording, e.g. the Adobe
+# Enhance Speech version, which is already denoised.
+SRC = Path(os.environ.get("VOICE_SRC", ROOT / "source-audio" / "voiceover-original.ogg"))
+OUT = Path(os.environ.get("VOICE_OUT", ROOT / "public" / "music" / "voice.mp3"))
+DENOISE = "" if "VOICE_SRC" in os.environ else "afftdn=nf=-30,"
 MARKS = ROOT / "src" / "voice.json"
 TL = json.loads((ROOT / "src" / "timeline.json").read_text())
 SR = 44100
@@ -76,7 +80,7 @@ def main():
             run(
                 "-ss", str(max(0, a - 0.05)), "-to", str(b + 0.1), "-i", SRC,
                 "-af",
-                "highpass=f=85,afftdn=nf=-30,"
+                f"highpass=f=85,{DENOISE}"
                 "silenceremove=start_periods=1:start_threshold=-42dB:"
                 "stop_periods=-1:stop_duration=0.3:stop_threshold=-42dB,"
                 "acompressor=threshold=-20dB:ratio=3:attack=5:release=120",
