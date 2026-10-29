@@ -275,16 +275,13 @@ def old_stem():
     for k, m in enumerate([88, 84, 91]):
         st.add(celesta(m), end + 1.6 + k * 0.4, 0.05, pan=0.4)
 
-    # warm 70s record: lush reverb, gentle tape wow, soft highs, light hiss
-    t = np.arange(N) / SR
-    delay = (0.004 + 0.0007 * np.sin(2 * np.pi * 0.5 * t)) * SR
-    idx = np.clip(np.arange(N) - delay, 0, N - 1)
+    # warm 70s record: lush reverb and soft highs, but clean (no tape wow or
+    # hiss: they read as noise on phone speakers)
     for ch_name in ("L", "R"):
         x = getattr(st, ch_name)
         x = room(x, 2.4, 0.35)
-        x = np.interp(idx, np.arange(N), x)
-        x = lp(hp(x, 80), 9000, 2)
-        x += 0.002 * hp(rng.standard_normal(N), 3000)
+        x = lp(hp(x, 80), 12000, 2)
+        rng.standard_normal(N)  # keep the random stream, so the other stems stay the same
         setattr(st, ch_name, x)
     return st
 

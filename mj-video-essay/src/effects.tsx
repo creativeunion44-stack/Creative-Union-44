@@ -39,7 +39,7 @@ const Vignette: React.FC<{ strength: number }> = ({ strength }) => (
   />
 );
 
-// Warm 1980s look: gate weave, tape grade, scanlines, grain, a tracking
+// Warm 1980s look: a light gate weave, tape grade, faint scanlines and grain, a tracking
 // band that drifts down, and an on-screen "PLAY" display.
 export const RetroLook: React.FC<{
   children: React.ReactNode;
@@ -47,9 +47,9 @@ export const RetroLook: React.FC<{
   seed?: string;
 }> = ({ children, osd, seed = "retro" }) => {
   const frame = useCurrentFrame();
-  const weaveX = (random(`${seed}-wx-${Math.floor(frame / 2)}`) - 0.5) * 3;
-  const weaveY = (random(`${seed}-wy-${Math.floor(frame / 2)}`) - 0.5) * 3;
-  const flicker = 0.96 + random(`${seed}-f-${frame}`) * 0.06;
+  const weaveX = (random(`${seed}-wx-${Math.floor(frame / 2)}`) - 0.5) * 1;
+  const weaveY = (random(`${seed}-wy-${Math.floor(frame / 2)}`) - 0.5) * 1;
+  const flicker = 0.99 + random(`${seed}-f-${frame}`) * 0.02;
   const bandY = ((frame * 9) % 2400) - 240;
 
   return (
@@ -73,7 +73,7 @@ export const RetroLook: React.FC<{
       <AbsoluteFill
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(0,0,0,0.16) 0px, rgba(0,0,0,0.16) 2px, transparent 2px, transparent 5px)",
+            "repeating-linear-gradient(0deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 5px)",
         }}
       />
       <div
@@ -84,12 +84,12 @@ export const RetroLook: React.FC<{
           top: bandY,
           height: 70,
           background:
-            "linear-gradient(180deg, transparent, rgba(255,255,255,0.10), rgba(255,255,255,0.03), transparent)",
+            "linear-gradient(180deg, transparent, rgba(255,255,255,0.04), rgba(255,255,255,0.01), transparent)",
           filter: "blur(2px)",
         }}
       />
-      <Grain opacity={0.35} id={`${seed}-grain`} />
-      <Vignette strength={0.7} />
+      <Grain opacity={0.08} id={`${seed}-grain`} />
+      <Vignette strength={0.55} />
       {osd ? (
         <div
           style={{
@@ -111,7 +111,7 @@ export const RetroLook: React.FC<{
   );
 };
 
-// Cold night look for today: blue grade, light noise, deep vignette.
+// Cold night look for today: blue grade, a hint of noise, deep vignette.
 export const NightLook: React.FC<{
   children: React.ReactNode;
   seed?: string;
@@ -127,7 +127,7 @@ export const NightLook: React.FC<{
         mixBlendMode: "soft-light",
       }}
     />
-    <Grain opacity={0.18} id={`${seed}-grain`} />
+    <Grain opacity={0.03} id={`${seed}-grain`} />
     <Vignette strength={0.75} />
   </AbsoluteFill>
 );

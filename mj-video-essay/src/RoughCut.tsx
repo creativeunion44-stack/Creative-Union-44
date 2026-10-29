@@ -81,10 +81,11 @@ const Then: React.FC<{ take: Take; seed: string }> = ({ take, seed }) => (
   </RetroLook>
 );
 
-// The night shots are very dark straight off the phone: lift them a little.
+// The night shots are very dark straight off the phone (denoised and
+// upscaled in public/footage): lift them a little.
 const Now: React.FC<{ take: Take; seed: string }> = ({ take, seed }) => (
   <NightLook seed={seed}>
-    <AbsoluteFill style={{ filter: "brightness(1.8) contrast(1.08)" }}>
+    <AbsoluteFill style={{ filter: "brightness(1.8) contrast(1.06)" }}>
       <Footage {...take} />
     </AbsoluteFill>
   </NightLook>
