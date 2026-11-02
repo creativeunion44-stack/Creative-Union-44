@@ -421,3 +421,5 @@ footer { background: var(--ink); color: rgba(255,248,239,.8); padding: 48px 0 32
   .rhythm { grid-template-columns: 1fr; }
   .tile { font-size: 18px; padding: 14px; }
 }
+.btn-ghost-light { color: var(--cream); border-color: var(--cream); margin-left: 8px; }
+.btn-ghost-light:hover { box-shadow: 4px 4px 0 var(--orange); }
