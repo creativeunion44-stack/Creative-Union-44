@@ -369,3 +369,5 @@ footer { background: var(--ink); color: rgba(255,248,239,.8); padding: 48px 0 32
 .dir-link { display: inline-block; margin-top: 14px; font-weight: 700; color: var(--orange-deep); text-decoration: none; }
 .dir-link:hover { text-decoration: underline; }
 .dir.featured .dir-link { color: #fff; }
+.yt-link { display: inline-block; margin-top: 10px; font-weight: 700; color: var(--orange); text-decoration: none; }
+.yt-link:hover { text-decoration: underline; }
