@@ -366,3 +366,6 @@ footer { background: var(--ink); color: rgba(255,248,239,.8); padding: 48px 0 32
 .partner h4 { font-family: var(--serif); font-size: 22px; line-height: 1.2; margin: 0 0 6px; }
 .partner p { margin: 0; color: var(--muted); font-size: 15px; }
 .partner-logo { width: 96px; height: 96px; object-fit: contain; margin-bottom: 12px; }
+.dir-link { display: inline-block; margin-top: 14px; font-weight: 700; color: var(--orange-deep); text-decoration: none; }
+.dir-link:hover { text-decoration: underline; }
+.dir.featured .dir-link { color: #fff; }
