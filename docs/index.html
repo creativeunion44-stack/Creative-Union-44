@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Creative Union 44 CIC</title>
+  <meta name="description" content="Creative Union 44 CIC — культурні та соціальні проєкти, виставки, семінари, тренінги, майстер-класи та жіночий клуб.">
+  <meta name="theme-color" content="#ff6a13">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&display=swap&subset=cyrillic" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!--
+  HOW TO EDIT
+  • Every text is written twice: data-l="uk" (Ukrainian) and data-l="en" (English).
+  • Anything with class="ph" is a PLACEHOLDER — replace it with real content and remove "ph".
+  • Logo: put the file at docs/img/logo.png and replace the "CU" text in .brand-mark with
+    <img src="img/logo.png" alt="Creative Union 44 CIC">
+-->
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="#top">
+      <span class="brand-mark">CU</span>
+      <span class="brand-name">Creative Union <small>44 · CIC</small></span>
+    </a>
+    <ul class="menu" id="menu">
+      <li><a href="#about"><span data-l="uk">Про нас</span><span data-l="en">About</span></a></li>
+      <li><a href="#work"><span data-l="uk">Напрями</span><span data-l="en">Our work</span></a></li>
+      <li><a href="#events"><span data-l="uk">Анонси</span><span data-l="en">Events</span></a></li>
+      <li><a href="#projects"><span data-l="uk">Проєкти</span><span data-l="en">Projects</span></a></li>
+      <li><a href="#video"><span data-l="uk">Відео</span><span data-l="en">Video</span></a></li>
+      <li><a href="#team"><span data-l="uk">Команда</span><span data-l="en">Team</span></a></li>
+      <li><a href="#contact"><span data-l="uk">Контакти</span><span data-l="en">Contact</span></a></li>
+    </ul>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-set="uk" type="button">UA</button>
+      <button data-set="en" type="button">EN</button>
+    </div>
+    <button class="burger" id="burger" type="button" aria-label="Menu" aria-controls="menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">
+          <span data-l="uk">Соціальне підприємство · Велика Британія</span>
+          <span data-l="en">Community Interest Company · United Kingdom</span>
+        </span>
+        <h1>
+          <span data-l="uk">Творчість, що <em>об’єднує</em> людей</span>
+          <span data-l="en">Creativity that <em>brings people</em> together</span>
+        </h1>
+        <p class="lead">
+          <span data-l="uk">Creative Union 44 CIC створює культурні та соціальні проєкти, виставки, семінари, тренінги й майстер-класи, а також об’єднує жінок у нашому клубі.</span>
+          <span data-l="en">Creative Union 44 CIC runs cultural and social projects, exhibitions, seminars, trainings and workshops, and brings women together through our club.</span>
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#events"><span data-l="uk">Найближчі події</span><span data-l="en">Upcoming events</span> →</a>
+          <a class="btn btn-ghost" href="#contact"><span data-l="uk">Зв’язатися з нами</span><span data-l="en">Get in touch</span></a>
+        </div>
+      </div>
+      <div class="hero-art reveal" aria-hidden="true">
+        <div class="shape s1"></div>
+        <div class="shape s2"></div>
+        <div class="shape s3"></div>
+        <div class="shape s4"></div>
+        <div class="badge"><div>Creative<br>Union<span>EST. · CIC</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span data-l="uk">Культура</span><span data-l="uk">Спільнота</span><span data-l="uk">Виставки</span><span data-l="uk">Майстер-класи</span><span data-l="uk">Жіночий клуб</span><span data-l="uk">Тренінги</span><span data-l="uk">Семінари</span><span data-l="uk">Соціальні проєкти</span>
+      <span data-l="uk">Культура</span><span data-l="uk">Спільнота</span><span data-l="uk">Виставки</span><span data-l="uk">Майстер-класи</span><span data-l="uk">Жіночий клуб</span><span data-l="uk">Тренінги</span><span data-l="uk">Семінари</span><span data-l="uk">Соціальні проєкти</span>
+      <span data-l="en">Culture</span><span data-l="en">Community</span><span data-l="en">Exhibitions</span><span data-l="en">Workshops</span><span data-l="en">Women’s Club</span><span data-l="en">Trainings</span><span data-l="en">Seminars</span><span data-l="en">Social projects</span>
+      <span data-l="en">Culture</span><span data-l="en">Community</span><span data-l="en">Exhibitions</span><span data-l="en">Workshops</span><span data-l="en">Women’s Club</span><span data-l="en">Trainings</span><span data-l="en">Seminars</span><span data-l="en">Social projects</span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="block alt" id="about">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="num">01</span>
+          <h2><span data-l="uk">Про <em>нас</em></span><span data-l="en">About <em>us</em></span></h2>
+        </div>
+      </div>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p class="big">
+            <span data-l="uk">Ми — Creative Union 44, некомерційне соціальне підприємство (Community Interest Company), яке працює на благо громади.</span>
+            <span data-l="en">We are Creative Union 44, a Community Interest Company working for the benefit of our community.</span>
+          </p>
+          <p class="ph">
+            <span data-l="uk">[Історія організації: коли і ким заснована, для кого працюємо, де ми знаходимося.]</span>
+            <span data-l="en">[Our story: when and by whom we were founded, who we work with, where we are based.]</span>
+          </p>
+          <p class="ph">
+            <span data-l="uk">[Місія: одне-два речення про те, навіщо існує Creative Union.]</span>
+            <span data-l="en">[Mission: one or two sentences on why Creative Union exists.]</span>
+          </p>
+        </div>
+        <div class="values reveal">
+          <div class="value">
+            <div class="ico bg-orange">✺</div>
+            <div>
+              <h3><span data-l="uk">Творчість</span><span data-l="en">Creativity</span></h3>
+              <p><span data-l="uk">Мистецтво й культура як спосіб висловитися та знайти себе.</span><span data-l="en">Art and culture as a way to express yourself and find your voice.</span></p>
+            </div>
+          </div>
+          <div class="value">
+            <div class="ico bg-sun">◎</div>
+            <div>
+              <h3><span data-l="uk">Спільнота</span><span data-l="en">Community</span></h3>
+              <p><span data-l="uk">Місце, де люди знайомляться, підтримують одне одного й діють разом.</span><span data-l="en">A place where people meet, support each other and act together.</span></p>
+            </div>
+          </div>
+          <div class="value">
+            <div class="ico bg-teal">✦</div>
+            <div>
+              <h3><span data-l="uk">Розвиток</span><span data-l="en">Growth</span></h3>
+              <p><span data-l="uk">Навчання, нові навички та впевненість через семінари й тренінги.</span><span data-l="en">Learning, new skills and confidence through seminars and trainings.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIRECTIONS -->
+  <section class="block" id="work">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="num">02</span>
+          <h2><span data-l="uk">Наші <em>напрями</em></span><span data-l="en">What <em>we do</em></span></h2>
+        </div>
+        <p><span data-l="uk">Усе, чим займається Creative Union, — від великих культурних проєктів до затишних зустрічей клубу.</span><span data-l="en">Everything Creative Union does — from large cultural projects to cosy club meet-ups.</span></p>
+      </div>
+      <div class="dir-grid">
+        <article class="dir featured reveal">
+          <div class="ico bg-sun">🎭</div>
+          <h3><span data-l="uk">Культурні проєкти</span><span data-l="en">Cultural projects</span></h3>
+          <p><span data-l="uk">Події, що знайомлять із мистецтвом, традиціями та культурою.</span><span data-l="en">Events that bring people closer to art, traditions and culture.</span></p>
+        </article>
+        <article class="dir reveal">
+          <div class="ico bg-teal">🤝</div>
+          <h3><span data-l="uk">Соціальні проєкти</span><span data-l="en">Social projects</span></h3>
+          <p><span data-l="uk">Ініціативи, що підтримують людей та громаду.</span><span data-l="en">Initiatives that support people and the community.</span></p>
+        </article>
+        <article class="dir reveal">
+          <div class="ico bg-rose">💐</div>
+          <h3><span data-l="uk">Жіночий клуб</span><span data-l="en">Women’s Club</span></h3>
+          <p><span data-l="uk">Простір для спілкування, підтримки та натхнення.</span><span data-l="en">A space for connection, support and inspiration.</span></p>
+        </article>
+        <article class="dir reveal">
+          <div class="ico bg-soft">🖼️</div>
+          <h3><span data-l="uk">Виставки</span><span data-l="en">Exhibitions</span></h3>
+          <p><span data-l="uk">Виставки робіт митців та учасників наших програм.</span><span data-l="en">Exhibitions of work by artists and our participants.</span></p>
+        </article>
+        <article class="dir reveal">
+          <div class="ico bg-sun">🎤</div>
+          <h3><span data-l="uk">Семінари</span><span data-l="en">Seminars</span></h3>
+          <p><span data-l="uk">Зустрічі з експертами, лекції та обговорення.</span><span data-l="en">Talks, lectures and discussions with experts.</span></p>
+        </article>
+        <article class="dir reveal">
+          <div class="ico bg-teal">📈</div>
+          <h3><span data-l="uk">Тренінги</span><span data-l="en">Trainings</span></h3>
+          <p><span data-l="uk">Практичні заняття для розвитку навичок.</span><span data-l="en">Hands-on sessions to build practical skills.</span></p>
+        </article>
+        <article class="dir reveal">
+          <div class="ico bg-orange">🎨</div>
+          <h3><span data-l="uk">Майстер-класи</span><span data-l="en">Workshops</span></h3>
+          <p><span data-l="uk">Творчі заняття для дорослих і дітей.</span><span data-l="en">Creative workshops for adults and children.</span></p>
+        </article>
+        <article class="dir reveal">
+          <div class="ico bg-paper">＋</div>
+          <h3 class="ph"><span data-l="uk">[Інший напрям]</span><span data-l="en">[Another area]</span></h3>
+          <p><span data-l="uk">Додайте сюди інші напрями або видаліть цю картку.</span><span data-l="en">Add more areas here or remove this card.</span></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="block dark" id="events">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="num">03</span>
+          <h2><span data-l="uk">Анонси</span><span data-l="en">Upcoming <em>events</em></span></h2>
+        </div>
+        <p><span data-l="uk">Приходьте на наші найближчі події.</span><span data-l="en">Join us at our next events.</span></p>
+      </div>
+      <div class="events">
+        <article class="event reveal">
+          <div class="event-date"><b class="ph">00</b><span class="ph"><span data-l="uk">місяць</span><span data-l="en">month</span></span></div>
+          <div class="event-body">
+            <span class="tag"><span data-l="uk">Майстер-клас</span><span data-l="en">Workshop</span></span>
+            <h3 class="ph"><span data-l="uk">[Назва події]</span><span data-l="en">[Event title]</span></h3>
+            <p class="meta ph"><span data-l="uk">[Час · Місце]</span><span data-l="en">[Time · Venue]</span></p>
+            <a class="more" href="#contact"><span data-l="uk">Записатися →</span><span data-l="en">Book a place →</span></a>
+          </div>
+        </article>
+        <article class="event reveal">
+          <div class="event-date"><b class="ph">00</b><span class="ph"><span data-l="uk">місяць</span><span data-l="en">month</span></span></div>
+          <div class="event-body">
+            <span class="tag"><span data-l="uk">Жіночий клуб</span><span data-l="en">Women’s Club</span></span>
+            <h3 class="ph"><span data-l="uk">[Назва події]</span><span data-l="en">[Event title]</span></h3>
+            <p class="meta ph"><span data-l="uk">[Час · Місце]</span><span data-l="en">[Time · Venue]</span></p>
+            <a class="more" href="#contact"><span data-l="uk">Записатися →</span><span data-l="en">Book a place →</span></a>
+          </div>
+        </article>
+        <article class="event reveal">
+          <div class="event-date"><b class="ph">00</b><span class="ph"><span data-l="uk">місяць</span><span data-l="en">month</span></span></div>
+          <div class="event-body">
+            <span class="tag"><span data-l="uk">Виставка</span><span data-l="en">Exhibition</span></span>
+            <h3 class="ph"><span data-l="uk">[Назва події]</span><span data-l="en">[Event title]</span></h3>
+            <p class="meta ph"><span data-l="uk">[Час · Місце]</span><span data-l="en">[Time · Venue]</span></p>
+            <a class="more" href="#contact"><span data-l="uk">Записатися →</span><span data-l="en">Book a place →</span></a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS DONE -->
+  <section class="block alt" id="projects">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="num">04</span>
+          <h2><span data-l="uk">Що ми <em>зробили</em></span><span data-l="en">What we’ve <em>done</em></span></h2>
+        </div>
+        <p><span data-l="uk">Проєкти, якими ми пишаємося.</span><span data-l="en">Projects we are proud of.</span></p>
+      </div>
+      <div class="projects">
+        <article class="project reveal">
+          <div class="thumb bg-sun">Tate Kids</div>
+          <div class="info">
+            <small><span data-l="uk">Відеопроєкт</span><span data-l="en">Video project</span></small>
+            <h3><span data-l="uk">Інтерв’ю з батьками про Tate Kids</span><span data-l="en">Parents’ interview about Tate Kids</span></h3>
+            <p><span data-l="uk">Батьки розповідають, чому дітям цікаво знайомитися з мистецтвом через Tate Kids.</span><span data-l="en">Parents share why children enjoy discovering art through Tate Kids.</span></p>
+          </div>
+        </article>
+        <article class="project reveal">
+          <div class="thumb bg-soft ph"><span data-l="uk">[фото]</span><span data-l="en">[photo]</span></div>
+          <div class="info">
+            <small class="ph"><span data-l="uk">[Напрям · рік]</span><span data-l="en">[Area · year]</span></small>
+            <h3 class="ph"><span data-l="uk">[Назва проєкту]</span><span data-l="en">[Project title]</span></h3>
+            <p class="ph"><span data-l="uk">[Коротко: що зробили і для кого.]</span><span data-l="en">[In brief: what we did and for whom.]</span></p>
+          </div>
+        </article>
+        <article class="project reveal">
+          <div class="thumb bg-teal ph"><span data-l="uk">[фото]</span><span data-l="en">[photo]</span></div>
+          <div class="info">
+            <small class="ph"><span data-l="uk">[Напрям · рік]</span><span data-l="en">[Area · year]</span></small>
+            <h3 class="ph"><span data-l="uk">[Назва проєкту]</span><span data-l="en">[Project title]</span></h3>
+            <p class="ph"><span data-l="uk">[Коротко: що зробили і для кого.]</span><span data-l="en">[In brief: what we did and for whom.]</span></p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANS -->
+  <section class="block" id="plans">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="num">05</span>
+          <h2><span data-l="uk">Що ми <em>плануємо</em></span><span data-l="en">What’s <em>next</em></span></h2>
+        </div>
+        <p><span data-l="uk">Наші плани та ідеї на майбутнє.</span><span data-l="en">Our plans and ideas for the future.</span></p>
+      </div>
+      <div class="timeline">
+        <div class="step reveal">
+          <span class="when ph"><span data-l="uk">[Сезон / місяць]</span><span data-l="en">[Season / month]</span></span>
+          <h3 class="ph"><span data-l="uk">[Запланований проєкт]</span><span data-l="en">[Planned project]</span></h3>
+          <p class="ph"><span data-l="uk">[Опис плану.]</span><span data-l="en">[Description of the plan.]</span></p>
+        </div>
+        <div class="step reveal">
+          <span class="when ph"><span data-l="uk">[Сезон / місяць]</span><span data-l="en">[Season / month]</span></span>
+          <h3 class="ph"><span data-l="uk">[Запланований проєкт]</span><span data-l="en">[Planned project]</span></h3>
+          <p class="ph"><span data-l="uk">[Опис плану.]</span><span data-l="en">[Description of the plan.]</span></p>
+        </div>
+        <div class="step reveal">
+          <span class="when ph"><span data-l="uk">[Сезон / місяць]</span><span data-l="en">[Season / month]</span></span>
+          <h3 class="ph"><span data-l="uk">[Запланований проєкт]</span><span data-l="en">[Planned project]</span></h3>
+          <p class="ph"><span data-l="uk">[Опис плану.]</span><span data-l="en">[Description of the plan.]</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="block dark" id="video">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="num">06</span>
+          <h2><span data-l="uk">Відео</span><span data-l="en">Video</span></h2>
+        </div>
+        <p><span data-l="uk">Подивіться, як проходять наші події.</span><span data-l="en">See what our events look like.</span></p>
+      </div>
+      <div class="videos">
+        <!-- Replace .video-frame content with a YouTube embed:
+             <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="..." allowfullscreen></iframe> -->
+        <div class="video-card reveal">
+          <div class="video-frame"><div><div class="play"></div><span class="ph"><span data-l="uk">[посилання на відео]</span><span data-l="en">[video link]</span></span></div></div>
+          <h3><span data-l="uk">Ласкаво просимо до Creative Union</span><span data-l="en">Welcome to Creative Union</span></h3>
+          <p><span data-l="uk">Вітальне відео</span><span data-l="en">Welcome video</span></p>
+        </div>
+        <div class="video-card reveal">
+          <div class="video-frame"><div><div class="play"></div><span class="ph"><span data-l="uk">[посилання на відео]</span><span data-l="en">[video link]</span></span></div></div>
+          <h3><span data-l="uk">Tate Kids: думка батьків</span><span data-l="en">Tate Kids: parents’ view</span></h3>
+          <p><span data-l="uk">Інтерв’ю</span><span data-l="en">Interview</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="block alt" id="team">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="num">07</span>
+          <h2><span data-l="uk">Наша <em>команда</em></span><span data-l="en">Our <em>team</em></span></h2>
+        </div>
+        <p><span data-l="uk">Люди, які роблять Creative Union.</span><span data-l="en">The people behind Creative Union.</span></p>
+      </div>
+      <div class="team">
+        <div class="member reveal"><div class="avatar bg-orange">?</div><h3 class="ph"><span data-l="uk">[Ім’я Прізвище]</span><span data-l="en">[Full name]</span></h3><p class="ph"><span data-l="uk">[Посада]</span><span data-l="en">[Role]</span></p></div>
+        <div class="member reveal"><div class="avatar bg-sun">?</div><h3 class="ph"><span data-l="uk">[Ім’я Прізвище]</span><span data-l="en">[Full name]</span></h3><p class="ph"><span data-l="uk">[Посада]</span><span data-l="en">[Role]</span></p></div>
+        <div class="member reveal"><div class="avatar bg-teal">?</div><h3 class="ph"><span data-l="uk">[Ім’я Прізвище]</span><span data-l="en">[Full name]</span></h3><p class="ph"><span data-l="uk">[Посада]</span><span data-l="en">[Role]</span></p></div>
+        <div class="member reveal"><div class="avatar bg-rose">?</div><h3 class="ph"><span data-l="uk">[Ім’я Прізвище]</span><span data-l="en">[Full name]</span></h3><p class="ph"><span data-l="uk">[Посада]</span><span data-l="en">[Role]</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN -->
+  <section class="block">
+    <div class="container">
+      <div class="join reveal">
+        <div>
+          <h2><span data-l="uk">Долучайтеся до нас!</span><span data-l="en">Join us!</span></h2>
+          <p><span data-l="uk">Станьте учасником, волонтером або партнером Creative Union.</span><span data-l="en">Become a participant, volunteer or partner of Creative Union.</span></p>
+        </div>
+        <div class="actions">
+          <a class="btn dark-btn" href="#contact"><span data-l="uk">Стати волонтером</span><span data-l="en">Volunteer</span></a>
+          <a class="btn" href="#contact"><span data-l="uk">Стати партнером</span><span data-l="en">Partner with us</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="block alt" id="contact">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="num">08</span>
+          <h2><span data-l="uk">Контакти</span><span data-l="en">Contact <em>us</em></span></h2>
+        </div>
+        <p><span data-l="uk">Напишіть або зателефонуйте нам — ми завжди раді.</span><span data-l="en">Write or call us — we’d love to hear from you.</span></p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-list reveal">
+          <a class="contact-item" href="tel:+440000000000">
+            <span class="ico">☎</span>
+            <span><small><span data-l="uk">Телефон</span><span data-l="en">Phone</span></small><b class="ph">+44 0000 000000</b></span>
+          </a>
+          <a class="contact-item" href="mailto:hello@example.com">
+            <span class="ico">✉</span>
+            <span><small>Email</small><b class="ph">hello@example.com</b></span>
+          </a>
+          <div class="contact-item">
+            <span class="ico">⌂</span>
+            <span><small><span data-l="uk">Адреса</span><span data-l="en">Address</span></small><b class="ph"><span data-l="uk">[Місто, адреса]</span><span data-l="en">[City, address]</span></b></span>
+          </div>
+          <div class="socials">
+            <a href="#" class="ph">Facebook</a>
+            <a href="#" class="ph">TikTok</a>
+            <a href="#" class="ph">Instagram</a>
+            <a href="#" class="ph">YouTube</a>
+          </div>
+        </div>
+        <div class="map-box reveal">
+          <p class="ph"><span data-l="uk">[Тут буде карта Google Maps з вашою адресою]</span><span data-l="en">[Google Map with your address goes here]</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container foot">
+    <div>
+      <div class="brand-name">Creative Union <small>44 · CIC</small></div>
+      <small><span data-l="uk">Community Interest Company, зареєстрована в Англії та Уельсі</span><span data-l="en">Community Interest Company registered in England and Wales</span> · <span class="ph">No. 00000000</span></small>
+      <small>© <span id="year">2026</span> Creative Union 44 CIC</small>
+    </div>
+    <nav class="foot-links">
+      <a href="#about"><span data-l="uk">Про нас</span><span data-l="en">About</span></a>
+      <a href="#work"><span data-l="uk">Напрями</span><span data-l="en">Our work</span></a>
+      <a href="#events"><span data-l="uk">Анонси</span><span data-l="en">Events</span></a>
+      <a href="#contact"><span data-l="uk">Контакти</span><span data-l="en">Contact</span></a>
+    </nav>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
