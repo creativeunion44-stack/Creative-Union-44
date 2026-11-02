@@ -371,3 +371,20 @@ footer { background: var(--ink); color: rgba(255,248,239,.8); padding: 48px 0 32
 .dir.featured .dir-link { color: #fff; }
 .yt-link { display: inline-block; margin-top: 10px; font-weight: 700; color: var(--orange); text-decoration: none; }
 .yt-link:hover { text-decoration: underline; }
+
+/* Lady Club London */
+.club { background: var(--orange-soft); }
+.club-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.club-photo { margin: 0; position: relative; }
+.club-photo img {
+  width: 100%; height: auto; border-radius: 28px; border: 3px solid var(--ink);
+  box-shadow: 12px 12px 0 var(--orange); transform: rotate(-1.5deg);
+}
+.club-text h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(38px, 5vw, 62px); line-height: 1.02; margin: 0 0 20px; }
+.club-text h2 em { color: var(--orange); }
+.club-text .big { font-family: var(--serif); font-size: 24px; line-height: 1.4; margin: 0 0 16px; }
+.club-text p { margin: 0 0 28px; }
+@media (max-width: 900px) {
+  .club-grid { grid-template-columns: 1fr; gap: 40px; }
+  .club-photo img { box-shadow: 8px 8px 0 var(--orange); }
+}
