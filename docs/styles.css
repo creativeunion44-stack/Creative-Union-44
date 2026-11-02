@@ -353,3 +353,19 @@ footer { background: var(--ink); color: rgba(255,248,239,.8); padding: 48px 0 32
   .brand-name { font-size: 17px; }
   .brand-name small { letter-spacing: 1px; }
 }
+
+/* partners */
+.partner-group {
+  font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--orange-deep); margin: 36px 0 16px;
+}
+.partner-group:first-of-type { margin-top: 0; }
+.partners { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; }
+.partner {
+  position: relative; padding: 24px 24px 22px; border-radius: var(--radius);
+  background: var(--paper); border: 2px solid var(--ink); transition: transform .2s, box-shadow .2s;
+}
+.partner:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--orange); }
+.partner .flag { font-size: 26px; display: block; margin-bottom: 10px; }
+.partner h4 { font-family: var(--serif); font-size: 22px; line-height: 1.2; margin: 0 0 6px; }
+.partner p { margin: 0; color: var(--muted); font-size: 15px; }
