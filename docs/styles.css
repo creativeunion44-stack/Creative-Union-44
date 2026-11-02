@@ -388,3 +388,36 @@ footer { background: var(--ink); color: rgba(255,248,239,.8); padding: 48px 0 32
   .club-grid { grid-template-columns: 1fr; gap: 40px; }
   .club-photo img { box-shadow: 8px 8px 0 var(--orange); }
 }
+.rhythm { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0 0 18px; }
+.rhythm-item {
+  background: var(--paper); border: 2px solid var(--ink); border-radius: 18px; padding: 16px 18px;
+  font-size: 15.5px; line-height: 1.5;
+}
+.rhythm-item b { display: block; font-family: var(--serif); font-size: 21px; color: var(--orange-deep); margin-bottom: 4px; }
+
+/* Creative Union ART */
+.art { background: var(--ink); color: var(--cream); }
+.art-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
+.art .eyebrow { color: var(--sun); }
+.art-text h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(38px, 5vw, 62px); line-height: 1.02; margin: 0 0 20px; }
+.art-text h2 em { color: var(--orange); }
+.art-text .big { font-family: var(--serif); font-style: italic; font-size: 26px; line-height: 1.35; margin: 0 0 18px; }
+.art-text p { margin: 0 0 16px; color: rgba(255,248,239,.85); }
+.art-text .btn { margin-top: 12px; }
+.art-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tile {
+  aspect-ratio: 1; border-radius: 24px; border: 3px solid var(--cream); display: flex; align-items: flex-end;
+  padding: 18px; font-family: var(--serif); font-weight: 800; font-size: 22px; line-height: 1.1; color: var(--ink);
+}
+.t1 { background: var(--orange); color: #fff; border-radius: 50% 50% 24px 24px; }
+.t2 { background: var(--sun); transform: translateY(24px); }
+.t3 { background: var(--teal); color: #fff; }
+.t4 { background: var(--rose); color: #fff; border-radius: 24px 24px 50% 50%; transform: translateY(24px); align-items: flex-start; }
+@media (max-width: 900px) {
+  .art-grid { grid-template-columns: 1fr; gap: 40px; }
+  .art-tiles { max-width: 420px; }
+}
+@media (max-width: 600px) {
+  .rhythm { grid-template-columns: 1fr; }
+  .tile { font-size: 18px; padding: 14px; }
+}
