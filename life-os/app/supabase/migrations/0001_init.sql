@@ -9,7 +9,7 @@ create type task_type        as enum ('step', 'habit', 'appointment', 'obligatio
 create type task_size        as enum ('S', 'M', 'L');
 create type task_status      as enum ('planned', 'done', 'waiting', 'cancelled');
 create type milestone_status as enum ('active', 'achieved_otherwise', 'changed', 'cancelled');
-create type habit_period     as enum ('day', 'week', 'month', 'by_appointment');
+create type habit_period     as enum ('day', 'week', 'month');  -- визиты к врачу — дела type='appointment', не привычки
 create type money_status     as enum ('confirmed', 'expected', 'hypothesis');
 create type money_kind       as enum ('income', 'expense');
 create type money_owner      as enum ('personal', 'project');
@@ -76,7 +76,7 @@ create table habits (
   title    text not null,
   norm     numeric not null check (norm >= 0),
   period   habit_period not null,
-  rrule    text,                    -- RRULE для напоминаний
+  rrule    text,                    -- RRULE для напоминаний (норма: неделя = /7, месяц = /30)
   weight   numeric not null default 1,
   active   boolean not null default true,
   ended_at date
@@ -93,7 +93,7 @@ create table tasks (
   type          task_type not null default 'step',
   size          task_size not null default 'M',
   status        task_status not null default 'planned',
-  due_at        timestamptz,
+  due_at        timestamptz,        -- для appointment: текущее время визита (перенос клиникой = новая дата)
   done_at       timestamptz,
   extra_hours   numeric not null default 0,
   postponed     smallint not null default 0,
@@ -197,7 +197,9 @@ create table change_log (
 create table ai_suggestions (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null references auth.users on delete cascade,
-  input       text not null,
+  input       text not null,        -- распознанный текст; аудио после распознавания не хранится
+  input_kind  text not null default 'text' check (input_kind in ('text', 'voice', 'csv')),
+  intent      text,                 -- new_task | done | goal | milestone | money | pause | question ...
   output      jsonb,
   confidence  numeric,
   zone        text check (zone in ('high', 'medium', 'low')),

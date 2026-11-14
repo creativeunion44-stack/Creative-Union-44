@@ -128,7 +128,7 @@ export function outcomes(t: Task, milestones: Milestone[], tasks: Task[]): Outco
 
 // ---------- Цель-состояние: индекс регулярности ----------
 
-export type Period = "day" | "week" | "month" | "by_appointment";
+export type Period = "day" | "week" | "month";
 export interface Habit {
   id: string;
   goalId: string;
@@ -144,7 +144,10 @@ export interface Pause {
 }
 
 export const WINDOW_DAYS = 28;
-const PERIOD_DAYS: Record<Exclude<Period, "by_appointment">, number> = { day: 1, week: 7, month: 30.4 };
+// v3.2: норма → частота в день: неделя = /7, месяц = /30.
+const PERIOD_DAYS: Record<Period, number> = { day: 1, week: 7, month: 30 };
+/** Привычка (или блок визитов) с ожидаемым меньше этого за окно в индекс не входит. */
+export const MIN_EXPECTED = 1;
 const DAY = 86_400_000;
 const d = (s: string) => Date.parse(s + "T00:00:00Z");
 
@@ -160,10 +163,20 @@ export function pauseDaysInWindow(habitId: string, pauses: Pause[], today: strin
   return days.size;
 }
 
-/** Ожидаемое число выполнений за окно (v3.2). Для «по записи» norm = записей в окне. */
+/** Ожидаемое число выполнений за окно = частота в день × активные дни. */
 export function expectedInWindow(h: Habit, activeDays: number): number {
-  if (h.period === "by_appointment") return h.norm;
   return (h.norm * activeDays) / PERIOD_DAYS[h.period];
+}
+
+/**
+ * Визит со временем (врач в четверг в 15:00) — разовое дело, а не привычка:
+ * «ожидаемо 1, сделано 0 или 1». Перенос клиникой = новая дата, не пропуск.
+ * Учитываются визиты цели-состояния с датой в окне [today-27; today], кроме отменённых.
+ */
+export interface Appointment {
+  goalId: string;
+  day: string; // YYYY-MM-DD текущая (после переноса) дата
+  status: TaskStatus;
 }
 
 /** Индекс регулярности 0..1 или null, если считать не из чего. */
@@ -173,6 +186,7 @@ export function regularityIndex(
   doneCounts: Record<string, number>,
   pauses: Pause[],
   today: string,
+  appointments: Appointment[] = [],
 ): number | null {
   let num = 0;
   let den = 0;
@@ -180,9 +194,19 @@ export function regularityIndex(
     if (h.goalId !== goalId || !h.active) continue;
     const active = WINDOW_DAYS - pauseDaysInWindow(h.id, pauses, today);
     const expected = expectedInWindow(h, active);
-    if (expected <= 0) continue; // выпадает из индекса, а не даёт 0%
+    if (expected < MIN_EXPECTED) continue; // редкая или почти всё окно на паузе — выпадает из индекса
     num += h.weight * Math.min(1, (doneCounts[h.id] ?? 0) / expected);
     den += h.weight;
+  }
+  // Визиты — одна составляющая индекса с весом 1 (каждый визит: ожидаемо 1, сделано 0/1).
+  const end = d(today);
+  const start = end - (WINDOW_DAYS - 1) * DAY;
+  const inWindow = appointments.filter(
+    (a) => a.goalId === goalId && a.status !== "cancelled" && d(a.day) >= start && d(a.day) <= end,
+  );
+  if (inWindow.length >= MIN_EXPECTED) {
+    num += inWindow.filter((a) => a.status === "done").length / inWindow.length;
+    den += 1;
   }
   return den === 0 ? null : num / den;
 }
@@ -222,4 +246,48 @@ export const fmtPct = (x: number) => `${Math.round(x * 100)}%`;
 export function contributionMessage(goalName: string, before: number, after: number): string {
   const delta = Math.round((after - before) * 100);
   return `+${delta}% к плану «${goalName}» (${fmtPct(before)} → ${fmtPct(after)})`;
+}
+
+// ---------- План дня и главная цель (v3.2) ----------
+
+export const FLEX_SHARE = 0.7;
+export const MINI_MAIN_STEP_HOURS = 0.25; // 10–15 минут
+
+/**
+ * Жёсткие дела (записи и дедлайны сегодня) всегда в плане и вне лимита.
+ * Лимит 70% — для гибких дел, от времени, оставшегося после жёстких.
+ * Если жёсткие занимают весь день — только мини-версия главного шага.
+ */
+export function dayBudget(freeHours: number, hardHours: number): { flexHours: number; busyWithHard: boolean } {
+  const left = freeHours - hardHours;
+  if (left <= MINI_MAIN_STEP_HOURS) return { flexHours: MINI_MAIN_STEP_HOURS, busyWithHard: true };
+  return { flexHours: FLEX_SHARE * left, busyWithHard: false };
+}
+
+export const STATE_GOAL_THRESHOLD = 0.5; // стартовое допущение
+
+export interface GoalStatus {
+  goalId: string;
+  type: GoalType;
+  lagBehindPace?: number; // темп − план (> 0 = отстаёт), только для проектов с дедлайном
+  daysWithoutStep?: number;
+  regularityLast2Weeks?: [number | null, number | null];
+}
+
+/** Кандидат в главную цель недели (выбирает человек). */
+export function suggestMainGoal(goals: GoalStatus[]): string | null {
+  const lagging = goals
+    .filter((g) => g.type === "project" && g.lagBehindPace !== undefined && g.lagBehindPace > 0)
+    .sort((a, b) => b.lagBehindPace! - a.lagBehindPace!);
+  if (lagging.length) return lagging[0].goalId;
+  const sinking = goals.find(
+    (g) =>
+      g.type === "state" &&
+      g.regularityLast2Weeks?.every((x) => x !== null && x < STATE_GOAL_THRESHOLD),
+  );
+  if (sinking) return sinking.goalId;
+  const stalled = goals
+    .filter((g) => (g.type === "project" || g.type === "result") && g.daysWithoutStep !== undefined)
+    .sort((a, b) => b.daysWithoutStep! - a.daysWithoutStep!);
+  return stalled[0]?.goalId ?? null;
 }

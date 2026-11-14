@@ -106,19 +106,20 @@ test("исходы: обязательство и дело без вклада",
 const habits: Habit[] = [
   { id: "sport", goalId: "G2", norm: 3, period: "week", weight: 1, active: true },
   { id: "water", goalId: "G2", norm: 1, period: "day", weight: 1, active: true },
-  { id: "doctor", goalId: "G2", norm: 0, period: "by_appointment", weight: 1, active: true },
+  { id: "massage", goalId: "G2", norm: 2, period: "month", weight: 1, active: true },
 ];
 
 test("индекс регулярности: среднее выполнение норм, каждая ≤ 100%", () => {
-  const idx = regularityIndex("G2", habits, { sport: 12, water: 14 }, [], "2026-11-14");
-  close(idx!, (1 + 0.5) / 2); // спорт 12/12 → 100%, вода 14/28 → 50%, врач без записей выпадает
+  const idx = regularityIndex("G2", habits, { sport: 12, water: 14, massage: 1 }, [], "2026-11-14");
+  // спорт 12/12 → 100%, вода 14/28 → 50%, массаж 1/(2×28/30) → 53,6%
+  close(idx!, (1 + 0.5 + 1 / (56 / 30)) / 3);
 });
 
 test("дни паузы не снижают индекс", () => {
   const pauses = [{ start: "2026-11-01", end: "2026-11-07" }];
   assert.equal(pauseDaysInWindow("water", pauses, "2026-11-14"), 7);
-  const idx = regularityIndex("G2", habits, { sport: 9, water: 21 }, pauses, "2026-11-14");
-  close(idx!, 1); // 21 активный день: спорт 9/9, вода 21/21
+  const idx = regularityIndex("G2", habits, { sport: 9, water: 21, massage: 2 }, pauses, "2026-11-14");
+  close(idx!, 1); // 21 активный день: спорт 9/9, вода 21/21, массаж 2/1,4 → 100%
 });
 
 test("перекрывающиеся паузы не удваиваются", () => {
@@ -142,4 +143,44 @@ test("подтверждённые, ожидаемые и гипотетичес
 
 test("сообщение бота о вкладе", () => {
   assert.equal(contributionMessage("ВНЖ", 0.28, 0.34), "+6% к плану «ВНЖ» (28% → 34%)");
+});
+
+test("привычка с ожидаемым < 1 за окно в индекс не входит", () => {
+  const rare: Habit[] = [{ id: "dentist", goalId: "G2", norm: 1, period: "month", weight: 1, active: true }];
+  const pauses = [{ start: "2026-10-20", end: "2026-11-10" }]; // 22 дня паузы → 6 активных → 0,2 ожидаемо
+  assert.equal(regularityIndex("G2", rare, {}, pauses, "2026-11-14"), null);
+});
+
+test("визиты: ожидаемо 1, сделано 0 или 1; перенос в будущее не пропуск, отмена не считается", () => {
+  const appts = [
+    { goalId: "G2", day: "2026-11-10", status: "done" as const },
+    { goalId: "G2", day: "2026-11-12", status: "planned" as const }, // прошёл и не отмечен = пропуск
+    { goalId: "G2", day: "2026-11-20", status: "planned" as const }, // перенесён клиникой на будущее
+    { goalId: "G2", day: "2026-11-11", status: "cancelled" as const },
+  ];
+  close(regularityIndex("G2", [], {}, [], "2026-11-14", appts)!, 0.5);
+  close(regularityIndex("G2", habits.slice(0, 1), { sport: 12 }, [], "2026-11-14", appts)!, (1 + 0.5) / 2);
+});
+
+test("план: лимит 70% от времени после жёстких дел; занятый день — мини-шаг", async () => {
+  const { dayBudget } = await import("./progress.ts");
+  close(dayBudget(6, 2).flexHours, 2.8);
+  assert.deepEqual(dayBudget(4, 4), { flexHours: 0.25, busyWithHard: true });
+});
+
+test("главная цель: отставание от темпа → регулярность < 50% две недели → дольше без шага", async () => {
+  const { suggestMainGoal } = await import("./progress.ts");
+  assert.equal(suggestMainGoal([
+    { goalId: "vnzh", type: "project", lagBehindPace: 0.05, daysWithoutStep: 3 },
+    { goalId: "grant", type: "project", lagBehindPace: 0.2, daysWithoutStep: 1 },
+  ]), "grant");
+  assert.equal(suggestMainGoal([
+    { goalId: "biz", type: "project", daysWithoutStep: 19 },
+    { goalId: "health", type: "state", regularityLast2Weeks: [0.4, 0.3] },
+  ]), "health");
+  assert.equal(suggestMainGoal([
+    { goalId: "biz", type: "project", daysWithoutStep: 19 },
+    { goalId: "x", type: "project", daysWithoutStep: 4 },
+    { goalId: "health", type: "state", regularityLast2Weeks: [0.6, 0.3] },
+  ]), "biz");
 });
